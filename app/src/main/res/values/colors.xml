@@ -3,4 +3,30 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="black_overlay">#66000000</color>
+    
+    <array name="player_colors">
+        <color>#e6194</color>
+        <color>#3cb44b</color>
+        <color>#ffe119</color>
+        <color>#4363d8</color>
+        <color>#f58231</color>
+        <color>#911eb4</color>
+        <color>#46f0f0</color>
+        <color>#f032e6</color>
+        <color>#bcf60c</color>
+        <color>#fabebe</color>
+        <color>#008080</color>
+        <color>#e6beff</color>
+        <color>#9a6324</color>
+        <color>#fffac8</color>
+        <color>#800000</color>
+        <color>#aaffc3</color>
+        <color>#808000</color>
+        <color>#ffd8b1</color>
+        <color>#000075</color>
+        <color>#808080</color>
+    </array>
+           
 </resources>
