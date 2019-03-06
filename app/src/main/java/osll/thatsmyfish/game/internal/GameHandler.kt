@@ -14,7 +14,7 @@ data class Finished(val gameStats: GameStats) : GameState()
 
 sealed class TurnInfo
 object InvalidTurn: TurnInfo()
-class PhaseStarted(gameState: GameState): TurnInfo()
+class PhaseStarted(val gameState: GameState): TurnInfo()
 class PenguinPlaced(val player: Player, val tile: Tile): TurnInfo()
 class PenguinMoved(val player: Player, val fromTile: Tile, val toTile: Tile): TurnInfo()
 class TurnPassed(val player: Player): TurnInfo()
@@ -27,7 +27,8 @@ class GameHandler(
 ) {
     val tiles: List<List<Tile>>
 
-    private var gameState: GameState = InitialPlacement
+    var gameState: GameState = InitialPlacement
+        private set
     private val currentScores = Array(players.size) { 0 }
     private val penguinPositions = players.map {
         it to mutableSetOf<Tile>()
@@ -105,6 +106,7 @@ class GameHandler(
 
                 val chosenTile = activePlayer.placePenguin(tiles)
                 return if (chosenTile.occupiedBy == null) {
+                    currentScores[activePlayers[currentPlayer]] += chosenTile.fishCount
                     chosenTile.occupiedBy = activePlayer
                     penguinPositions.getValue(activePlayer).add(chosenTile)
 

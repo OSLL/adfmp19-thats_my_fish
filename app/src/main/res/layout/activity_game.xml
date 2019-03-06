@@ -14,12 +14,18 @@
         android:orientation="horizontal">
     </LinearLayout>
 
-    <osll.thatsmyfish.game.GameFieldView
-        android:id="@+id/game_field"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:keepScreenOn="true"
-        android:fitsSystemWindows="true"/>
+        android:fitsSystemWindows="true">
+
+        <osll.thatsmyfish.game.GameFieldView
+            android:id="@+id/game_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:keepScreenOn="true"/>
+
+    </ScrollView>
 
 </FrameLayout>

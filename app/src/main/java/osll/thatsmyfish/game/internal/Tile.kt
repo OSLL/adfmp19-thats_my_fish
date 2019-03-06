@@ -2,14 +2,15 @@ package osll.thatsmyfish.game.internal
 
 import java.lang.IllegalArgumentException
 
-class Tile(shape: Shape, val fishCount: Int) {
-    private var initialized = false
+class Tile(val shape: Shape, val fishCount: Int) {
+    var state: TileState = TileState.New
+        private set
     private val neighbours: Array<Tile?> = Array(shape.moveDirections) { null }
     var occupiedBy: Player? = null
         internal set
 
     internal fun initializeNeighbours(initialNeighbours: Array<Tile?>) {
-        if (initialized) {
+        if (state != TileState.New) {
             throw IllegalStateException("tile is already initialized")
         }
         if (initialNeighbours.size != neighbours.size) {
@@ -19,7 +20,7 @@ class Tile(shape: Shape, val fishCount: Int) {
         for (i in 0 until initialNeighbours.size) {
             neighbours[i] = initialNeighbours[i]
         }
-        initialized = true
+        state = TileState.Initialized
     }
 
     fun getNeighbours() = neighbours.toList()
@@ -37,5 +38,12 @@ class Tile(shape: Shape, val fishCount: Int) {
         for (neighbour in neighbours) {
             neighbour?.neighbourSank(this)
         }
+        state = TileState.Sunken
+    }
+
+    sealed class TileState {
+        object New : TileState()
+        object Initialized : TileState()
+        object Sunken : TileState()
     }
 }

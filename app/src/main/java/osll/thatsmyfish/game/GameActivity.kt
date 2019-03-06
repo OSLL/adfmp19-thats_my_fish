@@ -1,17 +1,22 @@
 package osll.thatsmyfish.game
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Size
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import osll.thatsmyfish.R
 import kotlinx.android.synthetic.main.activity_game.*
+import osll.thatsmyfish.game.internal.AsyncPlayer
+import osll.thatsmyfish.game.internal.Bot
+import osll.thatsmyfish.game.internal.GameHandler
+import osll.thatsmyfish.game.internal.Shape
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-class GameActivity(val playerNames: List<String>, val botCount: Int) : AppCompatActivity() {
+class GameActivity : AppCompatActivity() {
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
         // Delayed removal of status and navigation bar
@@ -44,6 +49,23 @@ class GameActivity(val playerNames: List<String>, val botCount: Int) : AppCompat
 
         // Set up the user interaction to manually show or hide the system UI.
         game_field.setOnClickListener { toggle() }
+
+        val playerNames = intent.getStringArrayListExtra("players")
+        val bots = intent.getIntExtra("botCount", 0)
+        val fieldSize = Size(
+                intent.getIntExtra("fieldWidth", 5),
+                intent.getIntExtra("fieldHeight", 5)
+        )
+        val chosenShape = intent.getStringExtra("tileShape")
+
+        val playerColors: Array<Int> = resources.getIntArray(R.array.player_colors).toTypedArray()
+        val humanPlayers = playerNames.zip(playerColors).map { AsyncPlayer(it.first, it.second) }
+        val botPlayers = List(bots) { "Bot #$it" }.zip(playerColors.drop(playerNames.size)).map { Bot(it
+                    .first, it.second) }
+
+        findViewById<GameFieldView>(R.id.game_field).init(
+                GameHandler(fieldSize, Shape.byName(chosenShape), humanPlayers + botPlayers)
+        )
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

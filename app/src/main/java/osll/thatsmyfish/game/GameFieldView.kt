@@ -4,141 +4,177 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.view.View
-import osll.thatsmyfish.R
+import android.view.ViewGroup
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.launch
+import osll.thatsmyfish.game.internal.*
+import kotlin.coroutines.resume
+import kotlin.math.PI
+import kotlin.math.sin
 
 /**
  * TODO: document your custom view class.
  */
-class GameFieldView : View {
+class GameFieldView(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int)
+    : ViewGroup(context, attrs, defStyleAttr, defStyleRes) {
+    lateinit var game: GameHandler
+        private set
+    lateinit var turnInfoChannel: ReceiveChannel<TurnInfo>
 
-    private var _exampleString: String? = null // TODO: use a default from R.string...
-    private var _exampleColor: Int = Color.RED // TODO: use a default from R.color...
-    private var _exampleDimension: Float = 0f // TODO: use a default from R.dimen...
+    private var tiles: Map<Tile, TileView> = mapOf()
+    private var focusedTile: Tile? = null
 
-    private var textPaint: TextPaint? = null
-    private var textWidth: Float = 0f
-    private var textHeight: Float = 0f
+    var tileSide = 0f
 
-    /**
-     * The text to draw
-     */
-    var exampleString: String?
-        get() = _exampleString
-        set(value) {
-            _exampleString = value
-            invalidateTextPaintAndMeasurements()
+    fun init(gameHandler: GameHandler) {
+        game = gameHandler
+        tileSide = game.shape.fitIn(30f, 30f) // TODO: resources
+        tiles.values.forEach { it.visibility = GONE }
+        tiles = game.tiles.flatMap { it.map { tile -> tile to TileView(tile, context) } }.toMap()
+
+        for (view in tiles.values) {
+            view.setOnTouchListener { _, _ ->
+                if (game.gameState == Running && game.activePlayer == view.tile.occupiedBy) {
+                    focusedTile = view.tile
+                    postInvalidate()
+                } else {
+                    val activePlayer = game.activePlayer
+                    if (activePlayer is AsyncPlayer) {
+                        if (activePlayer.waitingForPlacement != null) {
+                            activePlayer.waitingForPlacement?.resume(view.tile)
+                        } else if (activePlayer.waitingForMove != null && focusedTile != null) {
+                            for (direction in 0 until view.tile.shape.moveDirections) {
+                                var steps = 0
+                                var curTile: Tile? = focusedTile
+                                do {
+                                    ++steps
+                                    curTile = curTile?.getNeighbour(direction)
+                                } while (
+                                        curTile != view.tile
+                                        && curTile != null
+                                        && curTile.occupiedBy == null
+                                )
+
+                                if (steps > 1 && curTile == view.tile) {
+                                    activePlayer.waitingForMove?.resume(Triple(focusedTile!!,
+                                            direction, steps))
+                                    break
+                                }
+                            }
+                        }
+                        focusedTile = null
+                        postInvalidate()
+                    }
+                }
+                true
+            }
         }
 
-    /**
-     * The font color
-     */
-    var exampleColor: Int
-        get() = _exampleColor
-        set(value) {
-            _exampleColor = value
-            invalidateTextPaintAndMeasurements()
+        GlobalScope.launch {
+            turnInfoChannel = produce(capacity = 1) {
+                var finished = false
+
+                while (!finished) {
+                    val turnInfo = game.handleTurn()
+
+                    finished = finished
+                            || (turnInfo is PhaseStarted && turnInfo.gameState is Finished)
+
+                    send(turnInfo)
+                }
+            }
         }
-
-    /**
-     * In the example view, this dimension is the font size.
-     */
-    var exampleDimension: Float
-        get() = _exampleDimension
-        set(value) {
-            _exampleDimension = value
-            invalidateTextPaintAndMeasurements()
-        }
-
-    /**
-     * In the example view, this drawable is drawn above the text.
-     */
-    var exampleDrawable: Drawable? = null
-
-    constructor(context: Context) : super(context) {
-        init(null, 0)
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(attrs, 0)
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val width = tileSide * (game.size.width + 1)    // TODO: make more accurate
+        val height = tileSide * (game.size.height + 1)  // here too
+
+        setMeasuredDimension(width.toInt(), height.toInt())
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
-        init(attrs, defStyle)
-    }
+    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
+        if (changed) {
+            for (i in 0 until game.tiles.size) {
+                for (j in 0 until game.tiles[i].size) {
+                    val flipped = (i + j) % 2 == 0
 
-    private fun init(attrs: AttributeSet?, defStyle: Int) {
-        // Load attributes
-        val a = context.obtainStyledAttributes(
-                attrs, R.styleable.GameFieldView, defStyle, 0)
+                    val tilePosition = when (game.shape) {
+                        Square   -> j * tileSide to i * tileSide
+                        Hexagon  -> {
+                            val tileHeight = tileSide * 2 * sin(PI / 3).toFloat()
 
-        _exampleString = a.getString(
-                R.styleable.GameFieldView_exampleString)
-        _exampleColor = a.getColor(
-                R.styleable.GameFieldView_exampleColor,
-                exampleColor)
-        // Use getDimensionPixelSize or getDimensionPixelOffset when dealing with
-        // values that should fall on pixel boundaries.
-        _exampleDimension = a.getDimension(
-                R.styleable.GameFieldView_exampleDimension,
-                exampleDimension)
+                            if (j % 2 == 0) {
+                                j * 3 * tileSide to i * tileHeight
+                            } else {
+                                (j * 3 + 1.5f) * tileSide to (i - 0.5f) * tileHeight
+                            }
+                        }
+                        Triangle -> {
+                            val tileHeight = tileSide * sin(PI / 3).toFloat()
 
-        if (a.hasValue(R.styleable.GameFieldView_exampleDrawable)) {
-            exampleDrawable = a.getDrawable(
-                    R.styleable.GameFieldView_exampleDrawable)
-            exampleDrawable?.callback = this
-        }
+                            if (flipped) {
+                                (j / 2f + 0.5f) * tileSide to i * tileHeight
+                            } else {
+                                j / 2f * tileSide to i * tileHeight
+                            }
+                        }
+                    }
 
-        a.recycle()
+                    val tileView = tiles.getValue(game.tiles[i][j])
 
-        // Set up a default TextPaint object
-        textPaint = TextPaint().apply {
-            flags = Paint.ANTI_ALIAS_FLAG
-            textAlign = Paint.Align.LEFT
-        }
+                    tileView.layout(0, 0, tileView.width, tileView.height)
 
-        // Update TextPaint and text measurements from attributes
-        invalidateTextPaintAndMeasurements()
-    }
-
-    private fun invalidateTextPaintAndMeasurements() {
-        textPaint?.let {
-            it.textSize = exampleDimension
-            it.color = exampleColor
-            textWidth = it.measureText(exampleString)
-            textHeight = it.fontMetrics.bottom
+                    tileView.x = tilePosition.first
+                    tileView.y = tilePosition.second
+                }
+            }
         }
     }
 
     override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-
-        // TODO: consider storing these as member variables to reduce
-        // allocations per draw cycle.
-        val paddingLeft = paddingLeft
-        val paddingTop = paddingTop
-        val paddingRight = paddingRight
-        val paddingBottom = paddingBottom
-
-        val contentWidth = width - paddingLeft - paddingRight
-        val contentHeight = height - paddingTop - paddingBottom
-
-        exampleString?.let {
-            // Draw the text.
-            canvas.drawText(it,
-                    paddingLeft + (contentWidth - textWidth) / 2,
-                    paddingTop + (contentHeight + textHeight) / 2,
-                    textPaint)
+        when (val newTurn = turnInfoChannel.poll()) {
+            null -> {}
+            else -> { // TODO: animations
+                for ((tile, view) in tiles) {
+                    if (tile.state == Tile.TileState.Sunken) {
+                        view.visibility = GONE
+                    }
+                }
+            }
         }
 
-        // Draw the example drawable on top of the text.
-        exampleDrawable?.let {
-            it.setBounds(paddingLeft, paddingTop,
-                    paddingLeft + contentWidth, paddingTop + contentHeight)
-            it.draw(canvas)
+        super.onDraw(canvas)
+
+        for (tileView in tiles.values) {
+            tileView.draw(canvas)
+        }
+    }
+
+    companion object {
+        private val paints: MutableMap<Int, Paint> = mutableMapOf()
+
+        fun getPaint(color: Int): Paint = paints.getOrPut(
+                color
+        ) {
+            val paint = Paint()
+            paint.color = color
+
+            paint
+        }
+
+        val textPaint: TextPaint
+
+        init {
+            textPaint = TextPaint(getPaint(Color.BLACK))
+            textPaint.textAlign = Paint.Align.CENTER
         }
     }
 }

@@ -5,6 +5,7 @@ package osll.thatsmyfish.game.internal
  */
 abstract class Player {
     abstract val name: String
+    abstract val color: Int
 
     /**
      * Move one of player's penguins to another tile

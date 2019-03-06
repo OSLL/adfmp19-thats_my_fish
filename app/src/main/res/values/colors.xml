@@ -7,26 +7,26 @@
     <color name="black_overlay">#66000000</color>
     
     <array name="player_colors">
-        <color>#e6194</color>
-        <color>#3cb44b</color>
-        <color>#ffe119</color>
-        <color>#4363d8</color>
-        <color>#f58231</color>
-        <color>#911eb4</color>
-        <color>#46f0f0</color>
-        <color>#f032e6</color>
-        <color>#bcf60c</color>
-        <color>#fabebe</color>
-        <color>#008080</color>
-        <color>#e6beff</color>
-        <color>#9a6324</color>
-        <color>#fffac8</color>
-        <color>#800000</color>
-        <color>#aaffc3</color>
-        <color>#808000</color>
-        <color>#ffd8b1</color>
-        <color>#000075</color>
-        <color>#808080</color>
+        <item>#e6194</item>
+        <item>#3cb44b</item>
+        <item>#ffe119</item>
+        <item>#4363d8</item>
+        <item>#f58231</item>
+        <item>#911eb4</item>
+        <item>#46f0f0</item>
+        <item>#f032e6</item>
+        <item>#bcf60c</item>
+        <item>#fabebe</item>
+        <item>#008080</item>
+        <item>#e6beff</item>
+        <item>#9a6324</item>
+        <item>#fffac8</item>
+        <item>#800000</item>
+        <item>#aaffc3</item>
+        <item>#808000</item>
+        <item>#ffd8b1</item>
+        <item>#000075</item>
+        <item>#808080</item>
     </array>
            
 </resources>
