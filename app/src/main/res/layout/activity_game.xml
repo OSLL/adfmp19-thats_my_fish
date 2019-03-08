@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="#0099cc"
-             tools:context=".game.GameActivity">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/game_scores"
+    <HorizontalScrollView
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="top"
-        android:orientation="horizontal">
-    </LinearLayout>
+        android:fadeScrollbars="false">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
-
-        <osll.thatsmyfish.game.GameFieldView
-            android:id="@+id/game_field"
+        <LinearLayout
+            android:id="@+id/game_scores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:keepScreenOn="true"/>
+            android:orientation="horizontal">
+        </LinearLayout>
+    </HorizontalScrollView>
 
-    </ScrollView>
+    <HorizontalScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
 
-</FrameLayout>
+        <ScrollView
+            android:id="@+id/game_view_holder"
+            android:layout_height="match_parent"
+            android:layout_width="wrap_content">
+        </ScrollView>
+
+    </HorizontalScrollView>
+
+</LinearLayout>

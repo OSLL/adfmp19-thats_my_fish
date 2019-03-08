@@ -4,10 +4,11 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="background">#CCCCCC</color>
+
     <color name="black_overlay">#66000000</color>
     
     <array name="player_colors">
-        <item>#e6194</item>
         <item>#3cb44b</item>
         <item>#ffe119</item>
         <item>#4363d8</item>

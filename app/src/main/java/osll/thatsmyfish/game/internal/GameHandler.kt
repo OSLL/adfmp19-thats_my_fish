@@ -37,6 +37,8 @@ class GameHandler(
     val scores
         get() = players.zip(currentScores).sortedByDescending { it.second }
 
+    fun getScore(player: Player) = currentScores[players.indexOf(player)]
+
     private val activePlayers = List(players.size) { it }.toMutableList()
     private var currentPlayer = 0
 
@@ -53,7 +55,7 @@ class GameHandler(
             for (j in 0 until size.width) {
                 tiles[i][j].initializeNeighbours(
                         when (shape) {
-                            Square -> arrayOf(
+                            Rectangle -> arrayOf(
                                     (i - 1) to (j),
                                     (i)     to (j + 1),
                                     (i + 1) to (j),
