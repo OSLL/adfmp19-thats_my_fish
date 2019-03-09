@@ -9,22 +9,34 @@ import android.text.TextPaint
 import android.util.Log
 import android.util.Size
 import android.view.View
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import osll.thatsmyfish.R
 import kotlinx.android.synthetic.main.activity_game.*
-import osll.thatsmyfish.game.internal.AsyncPlayer
-import osll.thatsmyfish.game.internal.Bot
-import osll.thatsmyfish.game.internal.GameHandler
-import osll.thatsmyfish.game.internal.Shape
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.SelectClause1
+import kotlinx.coroutines.selects.select
+import osll.thatsmyfish.game.internal.*
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 class GameActivity : AppCompatActivity() {
+    private lateinit var gameView: GameFieldView
+
+    private val scoresView
+        get() = findViewById<LinearLayout>(R.id.game_scores)
+    private lateinit var playerViews: Map<Player, PlayerView>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -48,14 +60,75 @@ class GameActivity : AppCompatActivity() {
 
         val gameHandler = GameHandler(fieldSize, Shape.byName(chosenShape), players)
 
-        val scoresView = findViewById<LinearLayout>(R.id.game_scores)
-        for (player in players) {
-            val playerView = PlayerView(this, player) { gameHandler.getScore(player) }
+        playerViews = players.map {
+            it to PlayerView(this, it) { gameHandler.getScore(it) }
+        }.toMap()
+
+        for ((_, playerView) in playerViews) {
             scoresView.addView(playerView)
         }
 
         val gameHolder = findViewById<ScrollView>(R.id.game_view_holder)
-        gameHolder.addView(GameFieldView(this, gameHandler))
+        gameView = GameFieldView(this, gameHandler)
+        gameHolder.addView(gameView)
+
+
+        GlobalScope.launch {
+            var finished = false
+
+            while (!finished) {
+                val activePlayerScoresView = gameHandler.activePlayer?.let {
+                    playerViews.getValue(it)
+                }
+                activePlayerScoresView?.apply {
+                    paint.style = Paint.Style.FILL_AND_STROKE
+                    paint.strokeWidth = 2f
+                    postInvalidate()
+                }
+
+                val turnInfo = gameHandler.handleTurn()
+
+                finished = finished
+                        || (turnInfo is PhaseStarted && turnInfo.gameState is Finished)
+
+                activePlayerScoresView?.apply {
+                    paint.style = Paint.Style.FILL
+                    postInvalidate()
+                }
+
+                runOnUiThread {
+                    this@GameActivity.handleGameFieldUpdate(turnInfo)
+                }
+            }
+        }
+    }
+
+    private fun showToast(message: String) =
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+    private fun handleGameFieldUpdate(turnInfo: TurnInfo) {
+        when (turnInfo) {
+            InvalidTurn      -> {}
+            is PenguinPlaced -> {
+                gameView.viewByTile(turnInfo.tile).postInvalidate()
+                playerViews.getValue(turnInfo.player).postInvalidate()
+            }
+            is PenguinMoved  -> {
+                gameView.viewByTile(turnInfo.fromTile).visibility = INVISIBLE
+                gameView.viewByTile(turnInfo.toTile).textView.postInvalidate()
+                playerViews.getValue(turnInfo.player).postInvalidate()
+            }
+            is PhaseStarted  -> when (turnInfo.gameState) {
+                InitialPlacement -> showToast("Time to place your penguins!")
+                Running          -> showToast("All penguins placed!")
+                is Finished      -> showToast(
+                        "${turnInfo.gameState.gameStats.scores.first().first.name} wins!"
+                )
+            }
+            is PlayerFinished    -> {
+                showToast("${turnInfo.player.name} has no more turns")
+            }
+        }
     }
 
     companion object {
@@ -70,12 +143,9 @@ class GameActivity : AppCompatActivity() {
             paint
         }
 
-        val textPaint: TextPaint
-
-        init {
-            textPaint = TextPaint(getPaint(Color.BLACK))
-            textPaint.textAlign = Paint.Align.CENTER
-            textPaint.textSize *= 10
+        val textPaint = TextPaint(getPaint(Color.BLACK)).apply {
+            textAlign = Paint.Align.CENTER
+            textSize *= 10
         }
     }
 }

@@ -3,7 +3,7 @@ package osll.thatsmyfish.game.internal
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.suspendCoroutine
 
-class AsyncPlayer(override val name: String, override val color: Int) : Player() {
+data class AsyncPlayer(override val name: String, override val color: Int) : Player() {
     var waitingForMove: Continuation<Triple<Tile, Int, Int>>? = null
         private set
     var waitingForPlacement: Continuation<Tile>? = null

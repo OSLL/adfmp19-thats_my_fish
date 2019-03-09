@@ -16,10 +16,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(
                     this, GameActivity::class.java
             ).apply {
-                putExtra("players", arrayOf("Trus", "Balbes", "Bivaliy", "Shurik"))
+                putExtra("players", arrayOf("Shurik"))
                 putExtra("botCount", 1)
-                putExtra("fieldWidth", 7)
-                putExtra("fieldHeight", 9)
+                putExtra("fieldWidth", 4)
+                putExtra("fieldHeight", 5)
                 putExtra("tileShape", "hexagon")
             })
         }

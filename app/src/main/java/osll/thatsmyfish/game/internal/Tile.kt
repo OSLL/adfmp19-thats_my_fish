@@ -41,6 +41,11 @@ class Tile(val shape: Shape, val fishCount: Int) {
         state = TileState.Sunken
     }
 
+    fun freeInDirection(direction: Int): Sequence<Tile> =
+            generateSequence(this) {
+                it.getNeighbour(direction)?.takeUnless { tile -> tile.occupiedBy != null }
+            }.drop(1)
+
     sealed class TileState {
         object New : TileState()
         object Initialized : TileState()

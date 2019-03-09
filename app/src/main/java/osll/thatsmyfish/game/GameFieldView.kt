@@ -1,120 +1,107 @@
 package osll.thatsmyfish.game
 
 import android.content.Context
-import android.graphics.Canvas
-import android.util.Log
-import android.view.MotionEvent
-import android.view.MotionEvent.ACTION_DOWN
-import android.view.View.MeasureSpec.EXACTLY
-import android.view.ViewGroup
+import android.view.View
 import android.widget.GridLayout
-import android.widget.GridView
-import com.github.florent37.shapeofview.ShapeOfView
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.launch
 import osll.thatsmyfish.game.internal.*
 import kotlin.coroutines.resume
-import kotlin.math.max
 
 /**
  * TODO: document your custom view class.
  */
 class GameFieldView(context: Context, val game: GameHandler) : GridLayout(context) {
-    lateinit var turnInfoChannel: ReceiveChannel<TurnInfo>
-    val tiles: Map<Tile, ShapeOfView>
-
-    private var focusedTile: Tile? = null
+    private val tiles: Map<Tile, TileView>
 
     init {
-        // TODO: resources
         tiles = game.tiles.mapIndexed { i, row ->
             row.mapIndexed { j, tile ->
-                tile to createTileView(tile, context, (i + j) % 2 != 0)
+                tile to TileView(tile, (i + j) % 2 != 0, context)
             }
         }.flatten().toMap()
 
         rowCount = game.size.height
         columnCount = game.size.width
 
+        val tileTapListener = createTileTapListener()
         for (i in 0 until game.size.height) {
             for (j in 0 until game.size.width) {
                 val tile = game.tiles[i][j]
-                val view = tiles.getValue(tile)
+                val view = viewByTile(tile)
 
                 addView(view)
-                view.setOnTouchListener { _, event ->
-                    if (event.action != ACTION_DOWN) {
-                        return@setOnTouchListener false
-                    }
-                    Log.d("Tile", "[$i, $j] tapped")
-
-                    val activePlayer = game.activePlayer
-
-                    if (activePlayer is AsyncPlayer) {
-                        if (activePlayer.waitingForPlacement != null) {
-                            activePlayer.waitingForPlacement?.resume(tile)
-                        } else if (activePlayer.waitingForMove != null) {
-                            if (game.gameState == Running && game.activePlayer == tile.occupiedBy) {
-                                focusedTile = tile
-                            } else if (focusedTile != null) {
-                                for (direction in 0 until game.shape.moveDirections) {
-                                    var steps = 0
-                                    var curTile: Tile? = focusedTile
-                                    do {
-                                        ++steps
-                                        curTile = curTile?.getNeighbour(direction)
-                                    } while (
-                                            curTile != tile
-                                            && curTile != null
-                                            && curTile.occupiedBy == null
-                                    )
-
-                                    if (steps > 1 && curTile == tile) {
-                                        activePlayer.waitingForMove?.resume(Triple(focusedTile!!,
-                                                direction, steps))
-                                        break
-                                    }
-                                }
-                                focusedTile = null
-                            } else {
-                                focusedTile = null
-                            }
-                        }
-                        this@GameFieldView.postInvalidate()
-                    }
-                    true
-                }
+                view.setOnClickListener(tileTapListener)
             }
         }
 
         if (game.shape is Hexagon) {
             game.tiles.last().forEachIndexed { j, tile ->
                 if (j % 2 == 0) {
+                    viewByTile(tile).visibility = View.INVISIBLE
                     tile.sink()
                 }
             }
             postInvalidate()
         }
+    }
 
-        GlobalScope.launch {
-            turnInfoChannel = produce(capacity = 1) {
-                var finished = false
+    private fun createTileTapListener() = object : OnClickListener {
+        private var focusedTile: Tile? = null
 
-                while (!finished) {
-                    val turnInfo = game.handleTurn()
+        override fun onClick(view: View) {
+            if (view !is TileView || game.gameState is Finished) {
+                return
+            }
 
-                    finished = finished
-                            || (turnInfo is PhaseStarted && turnInfo.gameState is Finished)
+            val tile = view.tile
+            val activePlayer = game.activePlayer
 
-                    send(turnInfo)
+            if (activePlayer is AsyncPlayer) {
+                if (activePlayer.waitingForPlacement != null) {
+                    activePlayer.waitingForPlacement?.resume(tile)
+                } else if (activePlayer.waitingForMove != null) {
+                    for (tileView in tiles.values) {
+                        tileView.setTint(false)
+                    }
+                    if (game.activePlayer == tile.occupiedBy) {
+                        focusedTile = tile
+                        for (direction in 0 until game.shape.moveDirections) {
+                            for (availableTile in tile.freeInDirection(direction)) {
+                                viewByTile(availableTile).apply {
+                                    setTint(true)
+                                    postInvalidate()
+                                }
+
+                            }
+                        }
+                    } else {
+                        if (focusedTile != null) {
+                            for (direction in 0 until game.shape.moveDirections) {
+                                var steps = 0
+                                var curTile: Tile? = focusedTile
+                                do {
+                                    ++steps
+                                    curTile = curTile?.getNeighbour(direction)
+                                } while (
+                                        curTile != tile
+                                        && curTile != null
+                                        && curTile.occupiedBy == null
+                                )
+
+                                if (curTile == tile) {
+                                    activePlayer.waitingForMove?.resume(Triple(focusedTile!!,
+                                            direction, steps))
+                                    break
+                                }
+                            }
+                        }
+                        focusedTile = null
+                    }
                 }
-
-                this@GameFieldView.postInvalidate()
             }
         }
     }
+
+    fun viewByTile(tile: Tile): TileView = tiles.getValue(tile)
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, left, top, right, bottom)
@@ -122,7 +109,7 @@ class GameFieldView(context: Context, val game: GameHandler) : GridLayout(contex
             for (i in 0 until game.tiles.size) {
                 for (j in 0 until game.tiles[i].size) {
                     val tile = game.tiles[i][j]
-                    val tileView = tiles.getValue(tile)
+                    val tileView = viewByTile(tile)
 
                     when (game.shape) {
                         Hexagon -> {
@@ -131,19 +118,8 @@ class GameFieldView(context: Context, val game: GameHandler) : GridLayout(contex
                             }
                         }
                     }
-
-
                 }
             }
         }
-    }
-
-    override fun dispatchDraw(canvas: Canvas) {
-        for ((tile, tileView) in tiles) {
-            if (tile.state == Tile.TileState.Sunken) {
-                tileView.visibility = GONE
-            }
-        }
-        super.dispatchDraw(canvas)
     }
 }

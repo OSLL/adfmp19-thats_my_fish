@@ -1,10 +1,11 @@
 package osll.thatsmyfish.game
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
+import android.content.res.ColorStateList
+import android.content.res.Resources
+import android.graphics.*
 import android.graphics.Color.*
-import android.graphics.Path
+import android.hardware.camera2.params.ColorSpaceTransform
 import android.text.Layout
 import android.view.Gravity
 import android.view.View
@@ -14,6 +15,7 @@ import com.github.florent37.shapeofview.ShapeOfView
 import com.github.florent37.shapeofview.manager.ClipPathManager
 import com.github.florent37.shapeofview.shapes.PolygonView
 import com.github.florent37.shapeofview.shapes.TriangleView
+import osll.thatsmyfish.R
 import osll.thatsmyfish.game.internal.*
 import kotlin.math.PI
 import kotlin.math.min
@@ -22,36 +24,56 @@ import kotlin.math.tan
 
 private const val side = 200f
 
-private class TileView(
-        private val shape: Shape, flipVertical: Boolean, context: Context
+class TileView(
+        val tile: Tile, val flipVertical: Boolean, context: Context
 ): ShapeOfView(context) {
-    init {
-        setClipPathCreator(object : ClipPathManager.ClipPathCreator {
-            override fun requiresBitmap() = false
+    private val tintColor = resources.getColor(
+            R.color.black_overlay,
+            resources.newTheme()
+    )
 
-            override fun createClipPath(width: Int, height: Int): Path {
-                val points = shape.run {
-                    getPoints(width.toFloat(), height.toFloat(), flipVertical)
-                }
-
-                val path = Path()
-
-                path.moveTo(points[0], points[1])
-                for (i in 1 until points.size / 2) {
-                    path.lineTo(points[2 * i], points[2 * i + 1])
-                }
-                path.close()
-
-                return path
+    val textView = object : TextView(context) {
+        override fun onDraw(canvas: Canvas) {
+            when (val mode = backgroundTintMode) {
+                null -> canvas.drawColor(Color.CYAN)
+                else -> canvas.drawColor(Color.CYAN, mode)
             }
-        })
+
+            when (val player = tile.occupiedBy) {
+                null -> {
+                }
+                else -> canvas.drawCircle(
+                        width / 2f, height / 2f,
+                        min(width, height) / 4f, GameActivity.getPaint(player.color)
+                )
+            }
+
+            foregroundTintMode?.let { canvas.drawColor(tintColor, it) }
+
+            super.onDraw(canvas)
+        }
+    }
+
+    val clipPathCreator = TileClipPathCreator()
+
+    init {
+        setClipPathCreator(clipPathCreator)
+
+        textView.text = tile.fishCount.toString()
+        textView.setBackgroundColor(TRANSPARENT)
+        textView.setTextColor(BLACK)
+
+        textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        textView.gravity = Gravity.CENTER
+
+        addView(textView)
     }
 
     private fun exactSpec(value: Float) =
             MeasureSpec.makeMeasureSpec(value.toInt(), EXACTLY)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        when (shape) {
+        when (tile.shape) {
             Rectangle -> super.onMeasure(
                     exactSpec(side),
                     exactSpec(side)
@@ -66,39 +88,57 @@ private class TileView(
             )
         }
     }
-}
 
-fun createTileView(tile: Tile, context: Context, flipVertical: Boolean): ShapeOfView {
-    val baseView = TileView(tile.shape, flipVertical, context)
+    override fun dispatchDraw(canvas: Canvas) {
+        super.dispatchDraw(canvas)
 
-    val textView = object : TextView(context) {
-        override fun onDraw(canvas: Canvas) {
-            when (val mode = backgroundTintMode) {
-                null -> canvas.drawColor(Color.CYAN)
-                else -> canvas.drawColor(Color.CYAN, mode)
-            }
-
-            when (val player = tile.occupiedBy) {
-                null -> {
+        canvas.drawPath(
+                clipPathCreator.createClipPath(width, height),
+                GameActivity.getPaint(Color.BLACK).apply {
+                    style = Paint.Style.STROKE
+                    strokeWidth = 2f
                 }
-                else -> canvas.drawCircle(
-                        width / 2f, height / 2f,
-                        min(width, height) / 3f, GameActivity.getPaint(player.color)
-                )
-            }
-
-            super.onDraw(canvas)
-        }
+        )
     }
 
-    textView.text = tile.fishCount.toString()
-    textView.setBackgroundColor(TRANSPARENT)
-    textView.setTextColor(BLACK)
+    override fun postInvalidate() {
+        textView.postInvalidate()
 
-    textView.textAlignment = View.TEXT_ALIGNMENT_CENTER
-    textView.gravity = Gravity.CENTER
+        super.postInvalidate()
+    }
 
-    baseView.addView(textView)
+    override fun invalidate() {
+        textView.invalidate()
 
-    return baseView
+        super.invalidate()
+    }
+
+    fun setTint(darken: Boolean) {
+        if (darken) {
+            textView.foregroundTintMode = PorterDuff.Mode.DARKEN
+        } else {
+            textView.foregroundTintMode = null
+        }
+        invalidate()
+    }
+
+    inner class TileClipPathCreator : ClipPathManager.ClipPathCreator {
+        override fun requiresBitmap() = false
+
+        override fun createClipPath(width: Int, height: Int): Path {
+            val points = tile.shape.run {
+                getPoints(width.toFloat(), height.toFloat(), flipVertical)
+            }
+
+            val path = Path()
+
+            path.moveTo(points[0], points[1])
+            for (i in 1 until points.size / 2) {
+                path.lineTo(points[2 * i], points[2 * i + 1])
+            }
+            path.close()
+
+            return path
+        }
+    }
 }
