@@ -20,9 +20,10 @@ data class PenguinMoved(val player: Player, val fromTile: Tile, val toTile: Tile
 data class PlayerFinished(val player: Player): TurnInfo()
 
 class GameHandler(
-        val size: Size,
+        val size: Pair<Int, Int>,
         val shape: Shape,
-        val players: List<Player>
+        val players: List<Player>,
+        val initialPenguins: Int
 ) {
     val tiles: List<List<Tile>>
 
@@ -45,13 +46,13 @@ class GameHandler(
         get() = players.getOrNull(activePlayers.getOrNull(currentPlayer) ?: -1)
 
     init {
-        tiles = List(size.height) {
-            List(size.width) {
+        tiles = List(size.second) {
+            List(size.first) {
                 Tile(shape, Random.nextInt(0, MAX_FISH_IN_TILE + 1))
             }
         }
-        for (i in 0 until size.height) {
-            for (j in 0 until size.width) {
+        for (i in 0 until size.second) {
+            for (j in 0 until size.first) {
                 tiles[i][j].initializeNeighbours(
                         when (shape) {
                             Square -> arrayOf(
@@ -111,7 +112,7 @@ class GameHandler(
     }
 
     private suspend fun handlePenguinPlacement(): TurnInfo {
-        if (penguinPositions.getValue(activePlayer!!).size == PENGUINS_AVAILABLE) {
+        if (penguinPositions.getValue(activePlayer!!).size == initialPenguins) {
             gameState = Running
 
             return PhaseStarted(gameState)
@@ -197,6 +198,5 @@ class GameHandler(
 
     companion object {
         const val MAX_FISH_IN_TILE = 3
-        const val PENGUINS_AVAILABLE = 1
     }
 }

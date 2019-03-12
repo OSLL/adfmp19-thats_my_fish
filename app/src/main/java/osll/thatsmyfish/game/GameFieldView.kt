@@ -27,8 +27,8 @@ class GameFieldView(context: Context, val game: GameHandler) : ViewGroup(context
         }.flatten().toMap()
 
         val tileTapListener = createTileTapListener()
-        for (i in 0 until game.size.height) {
-            for (j in 0 until game.size.width) {
+        for (i in 0 until game.size.second) {
+            for (j in 0 until game.size.first) {
                 val tile = game.tiles[i][j]
                 val view = viewByTile(tile)
 
@@ -132,21 +132,21 @@ class GameFieldView(context: Context, val game: GameHandler) : ViewGroup(context
 
         val tileWSpec = w?.let {
             when (game.shape) {
-                Hexagon -> it / (game.size.width * 0.75f + 0.25f)
-                Square -> it / game.size.width.toFloat()
-                Triangle -> it / (game.size.width * 0.5f + 0.5f)
+                Hexagon -> it / (game.size.first * 0.75f + 0.25f)
+                Square -> it / game.size.first.toFloat()
+                Triangle -> it / (game.size.first * 0.5f + 0.5f)
             }
         }
 
         val tileHSpec = h?.let {
             when (game.shape) {
-                Hexagon -> if (game.size.width > 1) {
-                    it / (game.size.height + 0.5f)
+                Hexagon -> if (game.size.first > 1) {
+                    it / (game.size.second + 0.5f)
                 } else {
-                    it / game.size.height.toFloat()
+                    it / game.size.second.toFloat()
                 }
-                Square -> it / game.size.height.toFloat()
-                Triangle -> it / game.size.height.toFloat()
+                Square -> it / game.size.second.toFloat()
+                Triangle -> it / game.size.second.toFloat()
             }
         }
 
@@ -162,13 +162,13 @@ class GameFieldView(context: Context, val game: GameHandler) : ViewGroup(context
         }
 
         val maxCoords = tileCoordinate(
-                game.size.height - 1,
-                game.size.width - 1
+                game.size.second - 1,
+                game.size.first - 1
         ).let {
-            if (game.size.width > 1) {
+            if (game.size.first > 1) {
                 val anotherIt = tileCoordinate(
-                        game.size.height - 1,
-                        game.size.width - 2
+                        game.size.second - 1,
+                        game.size.first - 2
                 )
 
                 max(it.first, anotherIt.first) to max(it.second, anotherIt.second)

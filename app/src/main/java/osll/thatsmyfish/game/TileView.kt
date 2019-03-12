@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.Color.*
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.MeasureSpec.EXACTLY
 import android.widget.TextView
@@ -61,6 +62,8 @@ class TileView(
         textView.text = tile.fishCount.toString()
         addView(textView)
     }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?) = true
 
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
