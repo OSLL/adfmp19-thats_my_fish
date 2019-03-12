@@ -1,16 +1,23 @@
 package osll.thatsmyfish.game
 
 import android.content.Context
+import android.util.Size
+import android.util.SizeF
 import android.view.View
-import android.widget.GridLayout
+import android.view.View.MeasureSpec.UNSPECIFIED
+import android.view.ViewGroup
 import osll.thatsmyfish.game.internal.*
 import kotlin.coroutines.resume
+import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.roundToInt
 
 /**
  * TODO: document your custom view class.
  */
-class GameFieldView(context: Context, val game: GameHandler) : GridLayout(context) {
+class GameFieldView(context: Context, val game: GameHandler) : ViewGroup(context) {
     private val tiles: Map<Tile, TileView>
+    private lateinit var tileSize: Size
 
     init {
         tiles = game.tiles.mapIndexed { i, row ->
@@ -18,9 +25,6 @@ class GameFieldView(context: Context, val game: GameHandler) : GridLayout(contex
                 tile to TileView(tile, (i + j) % 2 != 0, context)
             }
         }.flatten().toMap()
-
-        rowCount = game.size.height
-        columnCount = game.size.width
 
         val tileTapListener = createTileTapListener()
         for (i in 0 until game.size.height) {
@@ -31,16 +35,6 @@ class GameFieldView(context: Context, val game: GameHandler) : GridLayout(contex
                 addView(view)
                 view.setOnClickListener(tileTapListener)
             }
-        }
-
-        if (game.shape is Hexagon) {
-            game.tiles.last().forEachIndexed { j, tile ->
-                if (j % 2 == 0) {
-                    viewByTile(tile).visibility = View.INVISIBLE
-                    tile.sink()
-                }
-            }
-            postInvalidate()
         }
     }
 
@@ -103,21 +97,105 @@ class GameFieldView(context: Context, val game: GameHandler) : GridLayout(contex
 
     fun viewByTile(tile: Tile): TileView = tiles.getValue(tile)
 
+    private fun tileCoordinate(row: Int, column: Int): Pair<Float, Float> =
+            when (game.shape) {
+                Hexagon   -> {
+                    val x = 0.75f * tileSize.width * column
+                    val y = if (column % 2 == 0) {
+                        0.5f * tileSize.height
+                    } else {
+                        0f
+                    } + row * tileSize.height
+
+                    x to y
+                }
+                Square -> tileSize.width.toFloat() * column to tileSize.height.toFloat() * row
+                Triangle  -> tileSize.width / 2f * column to tileSize.height.toFloat() *
+                        row
+            }
+
+    private fun exactSpec(value: Int) =
+            MeasureSpec.makeMeasureSpec(value, MeasureSpec.EXACTLY)
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val w = if (MeasureSpec.getMode(widthMeasureSpec) == UNSPECIFIED) {
+            null
+        } else {
+            MeasureSpec.getSize(widthMeasureSpec)
+        }
+
+        val h = if (MeasureSpec.getMode(heightMeasureSpec) == UNSPECIFIED) {
+            null
+        } else {
+            MeasureSpec.getSize(heightMeasureSpec)
+        }
+
+        val tileWSpec = w?.let {
+            when (game.shape) {
+                Hexagon -> it / (game.size.width * 0.75f + 0.25f)
+                Square -> it / game.size.width.toFloat()
+                Triangle -> it / (game.size.width * 0.5f + 0.5f)
+            }
+        }
+
+        val tileHSpec = h?.let {
+            when (game.shape) {
+                Hexagon -> if (game.size.width > 1) {
+                    it / (game.size.height + 0.5f)
+                } else {
+                    it / game.size.height.toFloat()
+                }
+                Square -> it / game.size.height.toFloat()
+                Triangle -> it / game.size.height.toFloat()
+            }
+        }
+
+        tileSize = game.shape.fitInto(tileWSpec, tileHSpec).let {
+            Size(it.width.toInt(), it.height.toInt())
+        }
+
+        for (tileView in tiles.values) {
+            tileView.measure(
+                    exactSpec(tileSize.width),
+                    exactSpec(tileSize.height)
+            )
+        }
+
+        val maxCoords = tileCoordinate(
+                game.size.height - 1,
+                game.size.width - 1
+        ).let {
+            if (game.size.width > 1) {
+                val anotherIt = tileCoordinate(
+                        game.size.height - 1,
+                        game.size.width - 2
+                )
+
+                max(it.first, anotherIt.first) to max(it.second, anotherIt.second)
+            } else {
+                it
+            }
+        }
+
+        super.onMeasure(
+                exactSpec(ceil(maxCoords.first + tileSize.width).toInt()),
+                exactSpec(ceil(maxCoords.second + tileSize.height).toInt())
+        )
+    }
+
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
-        super.onLayout(changed, left, top, right, bottom)
         if (changed) {
             for (i in 0 until game.tiles.size) {
                 for (j in 0 until game.tiles[i].size) {
                     val tile = game.tiles[i][j]
                     val tileView = viewByTile(tile)
 
-                    when (game.shape) {
-                        Hexagon -> {
-                            if (j % 2 == 0) {
-                                tileView.y += 0.5f * tileView.height
-                            }
-                        }
-                    }
+                    val coords = tileCoordinate(i, j)
+
+                    tileView.layout(l, t, l + tileSize.width, t + tileSize.height)
+
+                    tileView.x = coords.first
+                    tileView.y = coords.second
                 }
             }
         }

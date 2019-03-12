@@ -54,7 +54,7 @@ class GameHandler(
             for (j in 0 until size.width) {
                 tiles[i][j].initializeNeighbours(
                         when (shape) {
-                            Rectangle -> arrayOf(
+                            Square -> arrayOf(
                                     (i - 1) to (j),
                                     (i)     to (j + 1),
                                     (i + 1) to (j),

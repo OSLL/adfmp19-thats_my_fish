@@ -18,9 +18,9 @@ class MainActivity : AppCompatActivity() {
             ).apply {
                 putExtra("players", arrayOf("Shurik"))
                 putExtra("botCount", 1)
-                putExtra("fieldWidth", 4)
-                putExtra("fieldHeight", 5)
-                putExtra("tileShape", "hexagon")
+                putExtra("fieldWidth", 6)
+                putExtra("fieldHeight", 6)
+                putExtra("tileShape", "triangle")
             })
         }
     }
