@@ -1,13 +1,11 @@
 package osll.thatsmyfish
 
 import android.graphics.Color
-import android.util.Size
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import osll.thatsmyfish.game.internal.*
-import java.lang.IllegalStateException
 import kotlin.random.Random
 
 /**
@@ -33,6 +31,39 @@ private class TestPlayer(
         assert(tileWithPenguin in penguinPositions)
 
         return Triple(tileWithPenguin, moveDirection.first, moveDirection.second)
+    }
+}
+
+/**
+ * Test player, which places its only penguin into a given position
+ * and then tries to move it into an occupied cell
+ */
+private class TestOccupiedPlayer(
+        val initialPosition: Pair<Int, Int>
+) : Player() {
+    override val name = "Test #2"
+    override val color = Color.YELLOW
+
+    lateinit var tileWithPenguin: Tile
+        private set
+
+    override suspend fun placePenguin(field: List<List<Tile>>) =
+            field[initialPosition.first][initialPosition.second].also {
+                tileWithPenguin = it
+            }
+
+    override suspend fun movePenguin(penguinPositions: List<Tile>): Triple<Tile, Int, Int> {
+        assert(tileWithPenguin in penguinPositions)
+        assert(tileWithPenguin.getNeighbours().any { (it ?: return@any false).occupiedBy != null })
+
+        for (direction in 0 until tileWithPenguin.shape.moveDirections) {
+            val toTile = tileWithPenguin.getNeighbour(direction)
+            if (toTile?.occupiedBy != null) {
+                return Triple(tileWithPenguin, direction, 1)
+            }
+        }
+
+        throw IllegalStateException() // should be unreachable
     }
 }
 
@@ -75,7 +106,7 @@ class GameHandlerTest {
         0 -> Hexagon
         1 -> Square
         2 -> Triangle
-        else -> throw IllegalStateException()
+        else -> throw IllegalStateException() // should be unreachable
     }
 
     @Test
@@ -107,7 +138,7 @@ class GameHandlerTest {
     }
 
     @Test
-    fun testImpossibleTurn() {
+    fun testOutOfBoundsTurn() {
         val shape = randomShape()
 
         for (direction in 0 until shape.moveDirections) {
@@ -120,6 +151,40 @@ class GameHandlerTest {
                     },
                     { InvalidTurn }
             )
+        }
+    }
+
+    @Test
+    fun testOccupiedTurn() {
+        val shape = randomShape()
+
+        val player = TestOccupiedPlayer(1 to 1)
+
+        val fillerPlayer = TestOccupiedPlayer(1 to 0)
+
+        val allPlayers = listOf(player, fillerPlayer)
+
+        val gameHandler = GameHandler(
+                3 to 3,
+                shape,
+                allPlayers,
+                1
+        )
+
+        runBlocking {
+            for (somePlayer in allPlayers) {
+                gameHandler.handleTurn().also {
+                    assertEquals(PenguinPlaced(somePlayer, somePlayer.tileWithPenguin), it)
+                }
+            }
+
+            gameHandler.handleTurn().also {
+                assertEquals(PhaseStarted(Running), it)
+            }
+
+            gameHandler.handleTurn().also {
+                assertEquals(InvalidTurn, it)
+            }
         }
     }
 
