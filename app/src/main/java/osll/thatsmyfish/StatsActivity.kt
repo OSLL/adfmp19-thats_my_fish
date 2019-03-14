@@ -1,10 +1,11 @@
-package osll.thatsmyfish.game
+package osll.thatsmyfish
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_stats.*
-import osll.thatsmyfish.R
+import osll.thatsmyfish.game.GameSetupActivity
 import kotlin.math.max
 
 
@@ -12,10 +13,13 @@ class StatsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stats)
+        mainMenuButton.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         val sharedPreferences = getSharedPreferences("stats", Context.MODE_PRIVATE)
         val win = sharedPreferences.getInt("win", 0)
         val draw = sharedPreferences.getInt("draw", 0)

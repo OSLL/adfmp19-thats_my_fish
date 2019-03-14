@@ -13,11 +13,12 @@ class GameSetupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_setup)
 
+        gameTypeRadioGroup.check(R.id.singleGameRadioButton)
         playerCountRadioGroup.check(R.id.twoPlayersRadioButton)
         tileShapeRadioGroup.check(R.id.triangleTileShapeRadioButton)
 
         startNewGameButton.setOnClickListener {
-            val intent = Intent(this, GameSetupActivity::class.java)
+            val intent = Intent(this, GameActivity::class.java)
 
             val checkedGameTypeRadioButtonId = gameTypeRadioGroup.checkedRadioButtonId
             val gameType = when (checkedGameTypeRadioButtonId) {
@@ -45,21 +46,23 @@ class GameSetupActivity : AppCompatActivity() {
             }
 
             val botCount: Int
-            val playersNames: Array<String>
+            val playerNames: ArrayList<String>
             when (gameType) {
                 GameType.SINGLE -> {
                     botCount = playerCount - 1
-                    playersNames = arrayOf("You")
+                    playerNames = arrayListOf("You")
                 }
                 GameType.HOTSEAT -> {
                     botCount = 0
                     //TODO probably should use colors as names
-                    playersNames = arrayOf("A", "B", "C", "D").sliceArray(0..playerCount)
+                    playerNames = arrayOf("A", "B", "C", "D")
+                            .sliceArray(0..playerCount)
+                            .toCollection(ArrayList())
                 }
             }
             intent.apply {
                 putExtra("botCount", botCount.toString())
-                putExtra("playersNames", playersNames)
+                putStringArrayListExtra("playerNames", playerNames)
             }
 
 

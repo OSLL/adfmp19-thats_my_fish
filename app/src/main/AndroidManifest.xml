@@ -35,7 +35,7 @@
             android:theme="@style/FullscreenTheme">
         </activity>
         <activity
-            android:name=".game.StatsActivity"
+            android:name=".StatsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="StatsActivity"
             android:theme="@style/FullscreenTheme">

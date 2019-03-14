@@ -4,211 +4,334 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/mainMenuButton"
-        android:layout_width="365dp"
-        android:layout_height="82dp"
-        android:layout_marginBottom="24dp"
-        android:text="Main menu"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/statsValuesLinearLayout"
-        app:layout_constraintVertical_bias="0.963" />
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_1v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_2v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_3v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.03" />
 
     <TextView
         android:id="@+id/statsConstantTextView"
         android:layout_width="0dp"
-        android:layout_height="78dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="26dp"
-        android:layout_marginEnd="24dp"
+        android:layout_height="0dp"
         android:gravity="center"
         android:text="Stats"
         android:textSize="56sp"
-        app:layout_constraintBottom_toTopOf="@+id/statsValuesLinearLayout"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_1" />
 
-    <LinearLayout
-        android:id="@+id/statsFeaturesLinearLayout"
-        android:layout_width="255dp"
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_2"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="104dp"
-        android:layout_marginBottom="104dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/statsConstantTextView"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
 
-        <TextView
-            android:id="@+id/winConstantTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Win"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="210dp"
-            tools:layout_editor_absoluteY="87dp" />
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
 
-        <TextView
-            android:id="@+id/drawConstantTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Draw"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="214dp"
-            tools:layout_editor_absoluteY="118dp" />
-
-        <TextView
-            android:id="@+id/loseConstantTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lose"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="82dp"
-            tools:layout_editor_absoluteY="179dp" />
-
-        <TextView
-            android:id="@+id/TotalConstantTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="114dp"
-            android:text="Total"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="222dp"
-            tools:layout_editor_absoluteY="212dp" />
-
-        <TextView
-            android:id="@+id/avgFishConstantTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Avg fish"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="222dp"
-            tools:layout_editor_absoluteY="272dp" />
-
-        <TextView
-            android:id="@+id/totalFishConstantTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="84dp"
-            android:text="Total fish"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="222dp"
-            tools:layout_editor_absoluteY="321dp" />
-
-        <TextView
-            android:id="@+id/avgMovesConstantTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Avg moves"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="185dp"
-            tools:layout_editor_absoluteY="387dp" />
-
-        <TextView
-            android:id="@+id/totalMovesConstantTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total moves"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="185dp"
-            tools:layout_editor_absoluteY="430dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/statsValuesLinearLayout"
-        android:layout_width="108dp"
+    <TextView
+        android:id="@+id/winConstantTextView"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/mainMenuButton"
-        app:layout_constraintEnd_toEndOf="@+id/statsConstantTextView"
-        app:layout_constraintTop_toBottomOf="@+id/statsConstantTextView">
+        android:text="Win"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_4"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_2v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_1v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_3" />
 
-        <TextView
-            android:id="@+id/winTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="1"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="313dp"
-            tools:layout_editor_absoluteY="78dp" />
+    <TextView
+        android:id="@+id/winTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:text="1"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_4"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_3v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_2v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_3" />
 
-        <TextView
-            android:id="@+id/drawTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="1"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="320dp"
-            tools:layout_editor_absoluteY="106dp" />
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.26" />
 
-        <TextView
-            android:id="@+id/loseTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="1"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="321dp"
-            tools:layout_editor_absoluteY="160dp" />
+    <TextView
+        android:id="@+id/drawConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Draw"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_5"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_2v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_1v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_4" />
 
-        <TextView
-            android:id="@+id/totalTextView"
-            android:layout_width="match_parent"
-            android:layout_height="119dp"
-            android:gravity="right"
-            android:text="1"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="328dp"
-            tools:layout_editor_absoluteY="203dp" />
+    <TextView
+        android:id="@+id/drawTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:text="1"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_5"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_3v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_2v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_4" />
 
-        <TextView
-            android:id="@+id/avgFishTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="1.5"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="334dp"
-            tools:layout_editor_absoluteY="263dp" />
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.32" />
 
-        <TextView
-            android:id="@+id/totalFishTextView"
-            android:layout_width="match_parent"
-            android:layout_height="79dp"
-            android:gravity="right"
-            android:text="1"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="325dp"
-            tools:layout_editor_absoluteY="312dp" />
+    <TextView
+        android:id="@+id/loseConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Lose"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_6"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_2v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_1v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_5" />
 
-        <TextView
-            android:id="@+id/avgMovesTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="1.5"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="301dp"
-            tools:layout_editor_absoluteY="387dp" />
+    <TextView
+        android:id="@+id/loseTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:text="1"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_6"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_3v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_2v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_5" />
 
-        <TextView
-            android:id="@+id/totalMovesTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right"
-            android:text="1"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="320dp"
-            tools:layout_editor_absoluteY="430dp" />
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.38" />
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/TotalConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Total"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_7"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_2v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_1v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_6" />
+
+    <TextView
+        android:id="@+id/totalTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:text="1"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_7"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_3v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_2v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_6" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.44" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/avgFishConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Avg fish"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_9"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_2v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_1v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_8" />
+
+    <TextView
+        android:id="@+id/avgFishTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:text="1.5"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_9"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_3v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_2v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_8" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.58" />
+
+    <TextView
+        android:id="@+id/totalFishConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Total fish"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_10"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_2v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_1v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_9" />
+
+    <TextView
+        android:id="@+id/totalFishTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:text="1"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_10"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_3v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_2v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_9" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.64" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <TextView
+        android:id="@+id/avgMovesConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Avg moves"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_12"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_2v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_1v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_11" />
+
+    <TextView
+        android:id="@+id/avgMovesTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:text="1.5"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_12"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_3v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_2v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_11" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.78" />
+
+    <TextView
+        android:id="@+id/totalMovesConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Total moves"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_13"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_2v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_1v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_12" />
+
+    <TextView
+        android:id="@+id/totalMovesTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:text="1"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_13"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_3v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_2v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_12" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.86" />
+
+    <Button
+        android:id="@+id/mainMenuButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Main menu"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/stats_guideline_14"
+        app:layout_constraintEnd_toEndOf="@+id/stats_guideline_3v"
+        app:layout_constraintStart_toStartOf="@+id/stats_guideline_1v"
+        app:layout_constraintTop_toTopOf="@+id/stats_guideline_13" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/stats_guideline_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.97" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

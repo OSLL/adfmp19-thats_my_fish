@@ -14,5 +14,8 @@ class MainActivity : AppCompatActivity() {
         startNewGameButton.setOnClickListener {
             startActivity(Intent(this, GameSetupActivity::class.java))
         }
+        statsButton.setOnClickListener {
+            startActivity(Intent(this, StatsActivity::class.java))
+        }
     }
 }

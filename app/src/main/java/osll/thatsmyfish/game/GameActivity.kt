@@ -35,7 +35,7 @@ class GameActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_game)
 
-        val playerNames = intent.getStringArrayExtra("players")
+        val playerNames = intent.getStringArrayListExtra("playerNames")
         val bots = intent.getIntExtra("botCount", 0)
         val fieldSize = Size(
                 intent.getIntExtra("fieldWidth", 5),
