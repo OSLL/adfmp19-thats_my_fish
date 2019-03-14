@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/gameSetupConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="27dp"
+        android:gravity="center"
+        android:text="Game setup"
+        android:textSize="56sp"
+        app:layout_constraintBottom_toTopOf="@+id/gameTypeRadioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/gameTypeRadioGroup"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="40dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/playerCountLinearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameSetupConstantTextView">
+
+        <RadioButton
+            android:id="@+id/singleGameRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Single"
+            android:textSize="40sp" />
+
+        <RadioButton
+            android:id="@+id/hotseatGameRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Hotseat"
+            android:textSize="40sp" />
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:id="@+id/playerCountLinearLayout"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginBottom="33dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/activateSharkLinearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameTypeRadioGroup">
+
+        <TextView
+            android:id="@+id/playerCountConstantTextView"
+            android:layout_width="181dp"
+            android:layout_height="51dp"
+            android:text="Player count"
+            android:textSize="32sp"
+            tools:layout_editor_absoluteX="11dp"
+            tools:layout_editor_absoluteY="167dp" />
+
+        <RadioGroup
+            android:id="@+id/playerCountRadioGroup"
+            android:layout_width="196dp"
+            android:layout_height="54dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="193dp"
+            tools:layout_editor_absoluteY="165dp">
+
+            <RadioButton
+                android:id="@+id/twoPlayersRadioButton"
+                android:layout_width="68dp"
+                android:text="2"
+                android:textSize="40sp"
+                android:layout_height="70dp" />
+
+            <RadioButton
+                android:id="@+id/threePlayersRadioButton"
+                android:layout_width="70dp"
+                android:text="3"
+                android:textSize="40sp"
+                android:layout_height="70dp" />
+
+            <RadioButton
+                android:id="@+id/fourPlayersRadioButton"
+                android:layout_width="83dp"
+                android:text="4"
+                android:textSize="40sp"
+                android:layout_height="70dp" />
+
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/activateSharkLinearLayout"
+        android:layout_width="0dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="40dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/showFishCountLinearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/playerCountLinearLayout">
+
+        <TextView
+            android:id="@+id/activateSharkConstantTextView"
+            android:layout_width="304dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Activate shark"
+            android:textSize="32sp" />
+
+        <CheckBox
+            android:id="@+id/activateSharkCheckBox"
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/showFishCountLinearLayout"
+        android:layout_width="0dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="46dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/tileShapeRadioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activateSharkLinearLayout">
+
+        <TextView
+            android:id="@+id/showFishCountConstantTextView"
+            android:layout_width="304dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Show fish count"
+            android:textSize="32sp" />
+
+        <CheckBox
+            android:id="@+id/showFishCountCheckBox"
+            android:layout_width="2dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false" />
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/tileShapeRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="9dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/startNewGameButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showFishCountLinearLayout">
+
+        <RadioButton
+            android:id="@+id/triangleTileShapeRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="triangle"
+            android:textSize="24sp" />
+
+        <RadioButton
+            android:id="@+id/squareTileShapeRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="square"
+            android:textSize="24sp" />
+
+        <RadioButton
+            android:id="@+id/hexagonTileShapeRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="hexagon"
+            android:textSize="24sp" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/startNewGameButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="16dp"
+        android:text="Start!"
+        android:textSize="80sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tileShapeRadioGroup" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

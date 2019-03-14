@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/shareOnFbButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="22dp"
+        android:enabled="false"
+        android:text="Share on FB"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/playAgainButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeAndMovesTableLayout" />
+
+    <Button
+        android:id="@+id/playAgainButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="22dp"
+        android:enabled="false"
+        android:text="Play again"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/mainMenuButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shareOnFbButton" />
+
+    <Button
+        android:id="@+id/mainMenuButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:text="Main menu"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/playAgainButton" />
+
+    <TextView
+        android:id="@+id/resultsConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="33dp"
+        android:gravity="center"
+        android:text="Results"
+        android:textSize="64sp"
+        app:layout_constraintBottom_toTopOf="@+id/resultsLinearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TableLayout
+        android:id="@+id/timeAndMovesTableLayout"
+        android:layout_width="0dp"
+        android:layout_height="147dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="27dp"
+        app:layout_constraintBottom_toTopOf="@+id/shareOnFbButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultsLinearLayout">
+
+        <TableRow
+            android:id="@+id/totalTimeTableRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/totalTimeConstantTextView"
+                android:layout_width="179dp"
+                android:layout_height="70dp"
+                android:gravity="left"
+                android:text="Total time"
+                android:textSize="32sp"
+                tools:layout_editor_absoluteX="27dp"
+                tools:layout_editor_absoluteY="281dp" />
+
+            <TextView
+                android:id="@+id/totalTimeTextView"
+                android:layout_width="179dp"
+                android:layout_height="70dp"
+                android:gravity="right"
+                android:text="12:34"
+                android:textSize="40sp"
+                tools:layout_editor_absoluteX="206dp"
+                tools:layout_editor_absoluteY="310dp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/totalMovesTableRow"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/totalMovesConstantTextView"
+                android:layout_width="179dp"
+                android:layout_height="71dp"
+                android:gravity="left"
+                android:text="Total moves"
+                android:textSize="32sp"
+                tools:layout_editor_absoluteX="26dp"
+                tools:layout_editor_absoluteY="379dp" />
+
+            <TextView
+                android:id="@+id/totalMovesTextView"
+                android:layout_width="182dp"
+                android:layout_height="70dp"
+                android:gravity="right"
+                android:text="99"
+                android:textSize="40sp"
+                tools:layout_editor_absoluteX="203dp"
+                tools:layout_editor_absoluteY="379dp" />
+        </TableRow>
+
+    </TableLayout>
+
+    <LinearLayout
+        android:id="@+id/resultsLinearLayout"
+        android:layout_width="0dp"
+        android:layout_height="66dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="96dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/timeAndMovesTableLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultsConstantTextView"></LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

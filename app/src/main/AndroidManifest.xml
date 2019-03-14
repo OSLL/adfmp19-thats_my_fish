@@ -22,6 +22,24 @@
             android:label="@string/title_activity_game"
             android:theme="@style/FullscreenTheme">
         </activity>
+        <activity
+            android:name=".game.GameSetupActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="GameSetupActivity"
+            android:theme="@style/FullscreenTheme">
+        </activity>
+        <activity
+            android:name=".game.GameStatsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="GameStatsActivity"
+            android:theme="@style/FullscreenTheme">
+        </activity>
+        <activity
+            android:name=".game.StatsActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="StatsActivity"
+            android:theme="@style/FullscreenTheme">
+        </activity>
     </application>
 
 </manifest>
