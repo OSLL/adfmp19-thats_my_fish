@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.MeasureSpec.EXACTLY
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.github.florent37.shapeofview.ShapeOfView
 import com.github.florent37.shapeofview.manager.ClipPathManager
 import osll.thatsmyfish.R
@@ -20,9 +21,9 @@ import kotlin.math.tan
 class TileView(
         val tile: Tile, val flipVertical: Boolean, context: Context
 ): ShapeOfView(context) {
-    private val tintColor = resources.getColor(
-            R.color.black_overlay,
-            resources.newTheme()
+    private val tintColor = ContextCompat.getColor(
+            context,
+            R.color.black_overlay
     )
 
     val textView = object : TextView(context) {
