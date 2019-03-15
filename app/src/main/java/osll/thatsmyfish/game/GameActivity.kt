@@ -1,29 +1,18 @@
 package osll.thatsmyfish.game
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
-import android.os.Handler
-import android.text.Layout
 import android.text.TextPaint
-import android.util.Log
 import android.util.Size
-import android.view.View
 import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
-import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.UiThread
 import androidx.appcompat.app.AppCompatActivity
 import osll.thatsmyfish.R
-import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.selects.SelectClause1
-import kotlinx.coroutines.selects.select
 import osll.thatsmyfish.game.internal.*
 
 /**
@@ -36,6 +25,8 @@ class GameActivity : AppCompatActivity() {
     private val scoresView
         get() = findViewById<LinearLayout>(R.id.game_scores)
     private lateinit var playerViews: Map<Player, PlayerView>
+    private var gameType: GameType = GameType.SINGLE
+    //private var gameStats: GameStats
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,13 +35,14 @@ class GameActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_game)
 
-        val playerNames = intent.getStringArrayExtra("players")
+        val playerNames = intent.getStringArrayListExtra("playerNames")
         val bots = intent.getIntExtra("botCount", 0)
         val fieldSize = Size(
                 intent.getIntExtra("fieldWidth", 5),
                 intent.getIntExtra("fieldHeight", 5)
         )
         val chosenShape = intent.getStringExtra("tileShape")
+        gameType = GameType.valueOf(intent.getStringExtra("gameType"))
 
         val playerColors: Array<Int> = resources.getIntArray(R.array.player_colors).toTypedArray()
         val humanPlayers = playerNames.zip(playerColors).map { AsyncPlayer(it.first, it.second) }
@@ -126,13 +118,67 @@ class GameActivity : AppCompatActivity() {
             is PhaseStarted  -> when (turnInfo.gameState) {
                 InitialPlacement -> showToast("Time to place your penguins!")
                 Running          -> showToast("All penguins placed!")
-                is Finished      -> showToast(
-                        "${turnInfo.gameState.gameStats.scores.first().first.name} wins!"
-                )
+                is Finished      -> {
+                    val gameStats = turnInfo.gameState.gameStats
+                    if (gameType == GameType.SINGLE) {
+                        recalculateStats(gameStats)
+                    }
+                    val gameScores = gameStats.scores
+                    val sortedPlayerNames = gameScores.map { it.first.name }
+                    val playerPoints = gameScores.map { it.second }
+
+                    startActivity(
+                        Intent(
+                                this, GameStatsActivity::class.java
+                        ).apply {
+                            putExtra("totalTime", gameStats.totalTime())
+                            putExtra("totalMoves", gameStats.totalMoves)
+                            putStringArrayListExtra("sortedPlayerNames", sortedPlayerNames.toCollection(ArrayList()))
+                            putIntegerArrayListExtra("playerPoints", playerPoints.toCollection(ArrayList()))
+                            putExtras(intent.extras!!)
+                        })
+                }
             }
             is PlayerFinished    -> {
                 showToast("${turnInfo.player.name} has no more turns")
             }
+        }
+    }
+
+    private fun recalculateStats(gameStats: GameStats) {
+        val sharedPreferences = getSharedPreferences("stats", Context.MODE_PRIVATE)
+        val win = sharedPreferences.getInt("win", 0)
+        val draw = sharedPreferences.getInt("draw", 0)
+        val lose = sharedPreferences.getInt("lose", 0)
+        val scores = gameStats.scores
+        var playerScore = 0
+        for (p in scores) {
+            val player = p.first
+            if (player.name == "You") {
+                playerScore = p.second
+                break
+            }
+        }
+        when {
+            playerScore > scores[1].second -> sharedPreferences.edit().apply {
+                putInt("win", win + 1).apply()
+            }
+            playerScore == scores[0].second -> sharedPreferences.edit().apply {
+                putInt("draw", draw + 1).apply()
+            }
+            else -> sharedPreferences.edit().apply {
+                putInt("lose", lose + 1).apply()
+            }
+        }
+        var totalScore = 0
+        for ((_, score) in gameStats.scores) {
+            totalScore += score
+        }
+        val totalFish = sharedPreferences.getInt("totalFish", 0) + totalScore
+        val totalMoves = sharedPreferences.getInt("totalMoves", 0) + gameStats.totalMoves
+        sharedPreferences.edit().apply {
+            putInt("totalFish", totalFish).apply()
+            putInt("totalMoves", totalMoves).apply()
         }
     }
 

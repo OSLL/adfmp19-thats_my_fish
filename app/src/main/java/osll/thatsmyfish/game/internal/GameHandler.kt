@@ -1,11 +1,15 @@
 package osll.thatsmyfish.game.internal
 
-import android.util.Size
 import kotlin.random.Random
 
 data class GameStats(
-        val scores: List<Pair<Player,Int>>
-)
+        val scores: List<Pair<Player,Int>>,
+        val startTime: Long = System.currentTimeMillis(),
+        var moves: Int = 0,
+        var totalMoves: Int = 0
+) {
+    fun totalTime(): Long = System.currentTimeMillis() - startTime
+}
 
 sealed class GameState
 object InitialPlacement : GameState()
@@ -33,6 +37,9 @@ class GameHandler(
     private val penguinPositions = players.map {
         it to mutableSetOf<Tile>()
     }.toMap()
+    var moves = 0
+    var totalMoves = 0
+    val startTime = System.currentTimeMillis()
 
     val scores
         get() = players.zip(currentScores).sortedByDescending { it.second }
@@ -144,7 +151,10 @@ class GameHandler(
         when {
             activePlayers.isEmpty() -> {
                 gameState = Finished(GameStats(
-                        scores
+                        scores,
+                        startTime,
+                        moves,
+                        totalMoves
                 ))
 
                 return PhaseStarted(gameState)
@@ -163,7 +173,10 @@ class GameHandler(
                         tile.sink()
                         toTile.occupiedBy = activePlayer
                         playerPenguins.add(toTile)
-
+                        totalMoves++
+                        if (currentPlayer == 0) {
+                            moves++
+                        }
                         return PenguinMoved(activePlayer!!, tile, toTile)
                     }
                 }

@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    tools:context=".MainActivity">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_1v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_2v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_3v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.65" />
+
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_4v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.85" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_5v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <TextView
+        android:id="@+id/gameSetupConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="Game setup"
+        android:textSize="56sp"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_5v"
+        app:layout_constraintTop_toTopOf="@id/game_setup_guideline_1"
+        app:layout_constraintBottom_toTopOf="@id/game_setup_guideline_2" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <RadioGroup
+        android:id="@+id/gameTypeRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_5v"
+        app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_3"
+        app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_4">
+
+        <RadioButton
+            android:id="@+id/singleGameRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Single"
+            android:textSize="40sp" />
+
+        <RadioButton
+            android:id="@+id/hotseatGameRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="Hotseat"
+            android:textSize="40sp" />
+
+    </RadioGroup>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <TextView
+        android:id="@+id/playerCountConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center|left"
+        android:text="Player count"
+        android:textSize="32sp"
+        app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_6"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_2v"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
+        app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_5" />
+
+    <RadioGroup
+        android:id="@+id/playerCountRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_6"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_5v"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_2v"
+        app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_5">
+
+        <RadioButton
+            android:id="@+id/twoPlayersRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:textSize="40sp" />
+
+        <RadioButton
+            android:id="@+id/threePlayersRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3"
+            android:textSize="40sp" />
+
+        <RadioButton
+            android:id="@+id/fourPlayersRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="4"
+            android:textSize="40sp" />
+
+    </RadioGroup>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.45" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+
+    <TextView
+        android:id="@+id/activateSharkConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center|left"
+        android:text="Activate shark"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_3v"
+        app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_7"
+        app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_8" />
+
+    <CheckBox
+        android:id="@+id/activateSharkCheckBox"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:enabled="false"
+        android:gravity="center|left"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_4v"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_5v"
+        app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_7"
+        app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_8" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <TextView
+        android:id="@+id/showFishCountConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Show fish count"
+        android:gravity="center|left"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_3v"
+        app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_8"
+        app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_9" />
+
+    <CheckBox
+        android:id="@+id/showFishCountCheckBox"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:enabled="false"
+        android:checked="true"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_4v"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_5v"
+        app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_8"
+        app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_9" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.75" />
+
+    <RadioGroup
+        android:id="@+id/tileShapeRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_5v"
+        app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_10"
+        app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_11">
+
+        <RadioButton
+            android:id="@+id/triangleTileShapeRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="triangle"
+            android:textSize="24sp" />
+
+        <RadioButton
+            android:id="@+id/squareTileShapeRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="square"
+            android:textSize="24sp" />
+
+        <RadioButton
+            android:id="@+id/hexagonTileShapeRadioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="hexagon"
+            android:textSize="24sp" />
+    </RadioGroup>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <Button
+        android:id="@+id/startNewGameButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Start!"
+        android:textSize="80sp"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_5v"
+        app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_11"
+        app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_12"/>
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_setup_guideline_12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

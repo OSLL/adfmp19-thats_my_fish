@@ -2,28 +2,28 @@ package osll.thatsmyfish.game
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.Color.*
+import android.graphics.Color.BLACK
+import android.graphics.Color.TRANSPARENT
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.MeasureSpec.EXACTLY
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.github.florent37.shapeofview.ShapeOfView
 import com.github.florent37.shapeofview.manager.ClipPathManager
 import osll.thatsmyfish.R
-import osll.thatsmyfish.game.internal.*
-import kotlin.math.PI
+import osll.thatsmyfish.game.internal.Tile
 import kotlin.math.min
-import kotlin.math.sin
-import kotlin.math.tan
 
 class TileView(
         val tile: Tile, val flipVertical: Boolean, context: Context
 ): ShapeOfView(context) {
-    private val tintColor = resources.getColor(
-            R.color.black_overlay,
-            resources.newTheme()
+    private val tintColor = ContextCompat.getColor(
+            context,
+            R.color.black_overlay
     )
+
+    var darken: Boolean? = false
 
     val textView = object : TextView(context) {
         init {
@@ -49,7 +49,7 @@ class TileView(
                 )
             }
 
-            foregroundTintMode?.let { canvas.drawColor(tintColor, it) }
+            darken?.let { canvas.drawColor(tintColor, PorterDuff.Mode.DARKEN) }
 
             super.onDraw(canvas)
         }
@@ -91,9 +91,9 @@ class TileView(
 
     fun setTint(darken: Boolean) {
         if (darken) {
-            textView.foregroundTintMode = PorterDuff.Mode.DARKEN
+            this.darken = true
         } else {
-            textView.foregroundTintMode = null
+            this.darken = null
         }
         invalidate()
     }
