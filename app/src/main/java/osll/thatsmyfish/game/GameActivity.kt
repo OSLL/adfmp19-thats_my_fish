@@ -123,12 +123,20 @@ class GameActivity : AppCompatActivity() {
                     if (gameType == GameType.SINGLE) {
                         recalculateStats(gameStats)
                     }
+                    val gameScores = gameStats.scores
+                    val playerNames = gameScores.map { it.first.name }
+                    val playerPoints = gameScores.map { it.second }
+                    intent.removeExtra("playerNames")
+
                     startActivity(
                         Intent(
                                 this, GameStatsActivity::class.java
                         ).apply {
                             putExtra("totalTime", gameStats.totalTime())
                             putExtra("totalMoves", gameStats.totalMoves)
+                            putStringArrayListExtra("playerNames", playerNames.toCollection(ArrayList()))
+                            putIntegerArrayListExtra("playerPoints", playerPoints.toCollection(ArrayList()))
+                            putExtras(intent.extras!!)
                         })
                 }
             }

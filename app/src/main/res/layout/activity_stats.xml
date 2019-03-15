@@ -47,7 +47,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/stats_guideline_1" />
 
-
     <android.support.constraint.Guideline
         android:id="@+id/stats_guideline_2"
         android:layout_width="0dp"

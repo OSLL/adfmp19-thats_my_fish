@@ -61,7 +61,7 @@ class GameSetupActivity : AppCompatActivity() {
                 }
             }
             intent.apply {
-                putExtra("botCount", botCount.toString())
+                putExtra("botCount", botCount)
                 putStringArrayListExtra("playerNames", playerNames)
             }
 

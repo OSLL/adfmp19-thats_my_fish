@@ -4,146 +4,233 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".MainActivity">
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_1v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_2v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_3v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.03" />
+
+    <TextView
+        android:id="@+id/resultsConstantTextView"
+        android:layout_height="0dp"
+        android:layout_width="0dp"
+        android:gravity="center"
+        android:text="Results"
+        android:textSize="64sp"
+        app:layout_constraintStart_toStartOf="@+id/game_stats_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_stats_guideline_3v"
+        app:layout_constraintTop_toTopOf="@id/game_stats_guideline_1"
+        app:layout_constraintBottom_toTopOf="@id/game_stats_guideline_2" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.44" />
+
+    <TextView
+        android:id="@+id/totalTimeConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="left"
+        android:text="Total time"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="@+id/game_stats_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_stats_guideline_2v"
+        app:layout_constraintTop_toTopOf="@id/game_stats_guideline_4"
+        app:layout_constraintBottom_toTopOf="@id/game_stats_guideline_5" />
+
+    <TextView
+        android:id="@+id/totalTimeTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:text="12:34"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="@+id/game_stats_guideline_2v"
+        app:layout_constraintEnd_toEndOf="@+id/game_stats_guideline_3v"
+        app:layout_constraintTop_toTopOf="@id/game_stats_guideline_4"
+        app:layout_constraintBottom_toTopOf="@id/game_stats_guideline_5" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.52" />
+
+    <TextView
+        android:id="@+id/totalMovesConstantTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="left"
+        android:text="Total moves"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="@+id/game_stats_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_stats_guideline_2v"
+        app:layout_constraintTop_toTopOf="@id/game_stats_guideline_5"
+        app:layout_constraintBottom_toTopOf="@+id/game_stats_guideline_6" />
+
+    <TextView
+        android:id="@+id/totalMovesTextView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:text="99"
+        android:textSize="40sp"
+        app:layout_constraintStart_toStartOf="@+id/game_stats_guideline_2v"
+        app:layout_constraintEnd_toEndOf="@+id/game_stats_guideline_3v"
+        app:layout_constraintTop_toTopOf="@+id/game_stats_guideline_5"
+        app:layout_constraintBottom_toTopOf="@+id/game_stats_guideline_6" />
+
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+
+
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.61" />
 
     <Button
         android:id="@+id/shareOnFbButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="22dp"
         android:enabled="false"
         android:text="Share on FB"
         android:textSize="40sp"
-        app:layout_constraintBottom_toTopOf="@+id/playAgainButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeAndMovesTableLayout" />
+        app:layout_constraintStart_toStartOf="@+id/game_stats_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_stats_guideline_3v"
+        app:layout_constraintTop_toTopOf="@id/game_stats_guideline_7"
+        app:layout_constraintBottom_toTopOf="@id/game_stats_guideline_8" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.71" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.74" />
 
     <Button
         android:id="@+id/playAgainButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="22dp"
-        android:enabled="false"
         android:text="Play again"
         android:textSize="40sp"
-        app:layout_constraintBottom_toTopOf="@+id/mainMenuButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/shareOnFbButton" />
+        app:layout_constraintStart_toStartOf="@+id/game_stats_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_stats_guideline_3v"
+        app:layout_constraintTop_toTopOf="@id/game_stats_guideline_9"
+        app:layout_constraintBottom_toTopOf="@id/game_stats_guideline_10" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.84" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.87" />
 
     <Button
         android:id="@+id/mainMenuButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="25dp"
         android:text="Main menu"
         android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/playAgainButton" />
+        app:layout_constraintStart_toStartOf="@+id/game_stats_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_stats_guideline_3v"
+        app:layout_constraintTop_toTopOf="@id/game_stats_guideline_11"
+        app:layout_constraintBottom_toTopOf="@id/game_stats_guideline_12" />
 
-    <TextView
-        android:id="@+id/resultsConstantTextView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="33dp"
-        android:gravity="center"
-        android:text="Results"
-        android:textSize="64sp"
-        app:layout_constraintBottom_toTopOf="@+id/resultsLinearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.97" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.4" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/game_stats_guideline_14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.3" />
 
     <TableLayout
-        android:id="@+id/timeAndMovesTableLayout"
+        android:id="@+id/resultsTableLayout"
         android:layout_width="0dp"
-        android:layout_height="147dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="27dp"
-        app:layout_constraintBottom_toTopOf="@+id/shareOnFbButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resultsLinearLayout">
-
-        <TableRow
-            android:id="@+id/totalTimeTableRow"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/totalTimeConstantTextView"
-                android:layout_width="179dp"
-                android:layout_height="70dp"
-                android:gravity="left"
-                android:text="Total time"
-                android:textSize="32sp"
-                tools:layout_editor_absoluteX="27dp"
-                tools:layout_editor_absoluteY="281dp" />
-
-            <TextView
-                android:id="@+id/totalTimeTextView"
-                android:layout_width="179dp"
-                android:layout_height="70dp"
-                android:gravity="right"
-                android:text="12:34"
-                android:textSize="40sp"
-                tools:layout_editor_absoluteX="206dp"
-                tools:layout_editor_absoluteY="310dp" />
-
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/totalMovesTableRow"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/totalMovesConstantTextView"
-                android:layout_width="179dp"
-                android:layout_height="71dp"
-                android:gravity="left"
-                android:text="Total moves"
-                android:textSize="32sp"
-                tools:layout_editor_absoluteX="26dp"
-                tools:layout_editor_absoluteY="379dp" />
-
-            <TextView
-                android:id="@+id/totalMovesTextView"
-                android:layout_width="182dp"
-                android:layout_height="70dp"
-                android:gravity="right"
-                android:text="99"
-                android:textSize="40sp"
-                tools:layout_editor_absoluteX="203dp"
-                tools:layout_editor_absoluteY="379dp" />
-        </TableRow>
-
-    </TableLayout>
-
-    <LinearLayout
-        android:id="@+id/resultsLinearLayout"
-        android:layout_width="0dp"
-        android:layout_height="66dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="96dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/timeAndMovesTableLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resultsConstantTextView"></LinearLayout>
+        android:layout_height="0dp"
+        android:stretchColumns="*"
+        app:layout_constraintStart_toStartOf="@+id/game_stats_guideline_1v"
+        app:layout_constraintEnd_toEndOf="@+id/game_stats_guideline_3v"
+        app:layout_constraintTop_toTopOf="@id/game_stats_guideline_3"
+        app:layout_constraintBottom_toTopOf="@id/game_stats_guideline_13"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
