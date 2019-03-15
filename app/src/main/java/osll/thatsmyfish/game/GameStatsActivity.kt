@@ -17,7 +17,7 @@ class GameStatsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_game_stats)
         totalTimeTextView.text = toMinutesAndSeconds(intent.getLongExtra("totalTime", 0))
         totalMovesTextView.text = intent.getIntExtra("totalMoves", 0).toString()
-        val playerNames = intent.getStringArrayListExtra("playerNames")
+        val playerNames = intent.getStringArrayListExtra("sortedPlayerNames")
         val playerPoints = intent.getIntegerArrayListExtra("playerPoints")
         val playerNamesTableRow = TableRow(this)
         for (playerName in playerNames) {

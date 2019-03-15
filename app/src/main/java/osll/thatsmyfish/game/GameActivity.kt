@@ -124,9 +124,8 @@ class GameActivity : AppCompatActivity() {
                         recalculateStats(gameStats)
                     }
                     val gameScores = gameStats.scores
-                    val playerNames = gameScores.map { it.first.name }
+                    val sortedPlayerNames = gameScores.map { it.first.name }
                     val playerPoints = gameScores.map { it.second }
-                    intent.removeExtra("playerNames")
 
                     startActivity(
                         Intent(
@@ -134,7 +133,7 @@ class GameActivity : AppCompatActivity() {
                         ).apply {
                             putExtra("totalTime", gameStats.totalTime())
                             putExtra("totalMoves", gameStats.totalMoves)
-                            putStringArrayListExtra("playerNames", playerNames.toCollection(ArrayList()))
+                            putStringArrayListExtra("sortedPlayerNames", sortedPlayerNames.toCollection(ArrayList()))
                             putIntegerArrayListExtra("playerPoints", playerPoints.toCollection(ArrayList()))
                             putExtras(intent.extras!!)
                         })
