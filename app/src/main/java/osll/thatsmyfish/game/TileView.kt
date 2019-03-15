@@ -23,7 +23,7 @@ class TileView(
             R.color.black_overlay
     )
 
-    var darken: Boolean? = false
+    var darken: Boolean = false
 
     val textView = object : TextView(context) {
         init {
@@ -49,7 +49,9 @@ class TileView(
                 )
             }
 
-            darken?.let { canvas.drawColor(tintColor, PorterDuff.Mode.DARKEN) }
+            if (darken) {
+                canvas.drawColor(tintColor, PorterDuff.Mode.DARKEN)
+            }
 
             super.onDraw(canvas)
         }
@@ -90,11 +92,7 @@ class TileView(
     }
 
     fun setTint(darken: Boolean) {
-        if (darken) {
-            this.darken = true
-        } else {
-            this.darken = null
-        }
+        this.darken = darken
         invalidate()
     }
 

@@ -12,6 +12,7 @@ import kotlin.math.max
 class StatsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         setContentView(R.layout.activity_stats)
         mainMenuButton.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))

@@ -11,6 +11,7 @@ import osll.thatsmyfish.game.internal.GameType
 class GameSetupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide()
         setContentView(R.layout.activity_game_setup)
 
         gameTypeRadioGroup.check(R.id.singleGameRadioButton)

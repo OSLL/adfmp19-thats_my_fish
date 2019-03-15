@@ -127,9 +127,9 @@
         android:layout_height="0dp"
         android:gravity="center|left"
         android:text="Player count"
-        android:textSize="32sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_6"
-        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_2v"
+        app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_3v"
         app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
         app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_5" />
 
@@ -142,7 +142,7 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_6"
         app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_5v"
-        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_2v"
+        app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_3v"
         app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_5">
 
         <RadioButton
@@ -150,21 +150,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="2"
-            android:textSize="40sp" />
+            android:textSize="30sp" />
 
         <RadioButton
             android:id="@+id/threePlayersRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="3"
-            android:textSize="40sp" />
+            android:textSize="30sp" />
 
         <RadioButton
             android:id="@+id/fourPlayersRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="4"
-            android:textSize="40sp" />
+            android:textSize="30sp" />
 
     </RadioGroup>
 
@@ -190,7 +190,7 @@
         android:layout_weight="1"
         android:gravity="center|left"
         android:text="Activate shark"
-        android:textSize="32sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
         app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_3v"
         app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_7"
@@ -221,7 +221,7 @@
         android:layout_weight="1"
         android:text="Show fish count"
         android:gravity="center|left"
-        android:textSize="32sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
         app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_3v"
         app:layout_constraintTop_toTopOf="@+id/game_setup_guideline_8"
@@ -310,7 +310,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.95" />
+        app:layout_constraintGuide_percent="1" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
