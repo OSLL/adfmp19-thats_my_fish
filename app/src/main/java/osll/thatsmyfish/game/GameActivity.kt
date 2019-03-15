@@ -58,7 +58,12 @@ class GameActivity : AppCompatActivity() {
                     .first, it.second) }
         val players = humanPlayers + botPlayers
 
-        val gameHandler = GameHandler(fieldSize, Shape.byName(chosenShape), players)
+        val gameHandler = GameHandler(
+                fieldSize.width to fieldSize.height,
+                Shape.byName(chosenShape),
+                players,
+                3
+        )
 
         playerViews = players.map {
             it to PlayerView(this, it) { gameHandler.getScore(it) }
