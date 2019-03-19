@@ -8,6 +8,7 @@ import android.widget.TableRow
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_game_stats.*
+import osll.thatsmyfish.IllegalIntentReceived
 import osll.thatsmyfish.MainActivity
 import osll.thatsmyfish.R
 
@@ -16,10 +17,18 @@ class GameStatsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_game_stats)
-        totalTimeTextView.text = toMinutesAndSeconds(intent.getLongExtra("totalTime", 0))
-        totalMovesTextView.text = intent.getIntExtra("totalMoves", 0).toString()
-        val playerNames = intent.getStringArrayListExtra("sortedPlayerNames")
-        val playerPoints = intent.getIntegerArrayListExtra("playerPoints")
+
+        val gameResults = intent.getBundleExtra("gameResults")
+                ?: throw IllegalIntentReceived("gameResults", this)
+        val gameSettings = intent.getBundleExtra("gameSettings")
+                ?: throw IllegalIntentReceived("gameSettings", this)
+
+        totalTimeTextView.text = toMinutesAndSeconds(gameResults.getLong("totalTime", 0))
+        totalMovesTextView.text = gameResults.getInt("totalMoves", 0).toString()
+        val playerNames = gameResults.getStringArrayList("sortedPlayerNames")
+                ?: throw IllegalIntentReceived("sortedPlayerNames", this)
+        val playerPoints = gameResults.getIntegerArrayList("playerPoints")
+                ?: throw IllegalIntentReceived("playerPoints", this)
         val playerNamesTableRow = TableRow(this)
         for (playerName in playerNames) {
             val playerNameTextView = TextView(this)
@@ -40,13 +49,21 @@ class GameStatsActivity : AppCompatActivity() {
         resultsTableLayout.addView(playerPointsTableRow)
 
         mainMenuButton.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            setResult(0)
+            finish()
         }
         playAgainButton.setOnClickListener {
-            startActivity(Intent(this, GameActivity::class.java).apply {
-                putExtras(intent.extras!!)
-            })
+            val intent = Intent().apply {
+                putExtra("gameSettings", gameSettings)
+            }
+            setResult(1, intent)
+            finish()
         }
+    }
+
+    override fun onBackPressed() {
+        setResult(0)
+        finish()
     }
 
     private fun toMinutesAndSeconds(millis: Long): String {

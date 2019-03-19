@@ -18,10 +18,8 @@
     <string name="total_moves">Total moves</string>
     <string name="share_on_fb">Share on FB</string>
     <string name="play_again">Play again</string>
-    <string name="main_menu">Main menu</string>
     <string name="continue_game">Continue</string>
     <string name="new_game">New game</string>
-    <string name="stats">Stats</string>
     <string name="stats">Stats</string>
     <string name="win">Win</string>
     <string name="draw">Draw</string>
@@ -30,6 +28,5 @@
     <string name="avg_fish">Avg fish</string>
     <string name="total_fish">Total fish</string>
     <string name="avg_moves">Avg moves</string>
-    <string name="total_moves">Total moves</string>
     <string name="main_menu">Main menu</string>
 </resources>

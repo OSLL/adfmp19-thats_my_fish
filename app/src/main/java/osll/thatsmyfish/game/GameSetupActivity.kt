@@ -16,10 +16,9 @@ class GameSetupActivity : AppCompatActivity() {
 
         gameTypeRadioGroup.check(R.id.singleGameRadioButton)
         playerCountRadioGroup.check(R.id.twoPlayersRadioButton)
-        tileShapeRadioGroup.check(R.id.triangleTileShapeRadioButton)
+        tileShapeRadioGroup.check(R.id.squareTileShapeRadioButton)
 
         startNewGameButton.setOnClickListener {
-            val intent = Intent(this, GameActivity::class.java)
 
             val checkedGameTypeRadioButtonId = gameTypeRadioGroup.checkedRadioButtonId
             val gameType = when (checkedGameTypeRadioButtonId) {
@@ -28,9 +27,6 @@ class GameSetupActivity : AppCompatActivity() {
                 else -> {
                     throw IllegalArgumentException("Invalid radio button for game type")
                 }
-            }
-            intent.apply {
-                putExtra("gameType", gameType.toString())
             }
 
             val checkedPlayerCountRadioButtonId = playerCountRadioGroup.checkedRadioButtonId
@@ -41,9 +37,6 @@ class GameSetupActivity : AppCompatActivity() {
                 else -> {
                     throw IllegalArgumentException("Invalid radio button for players number")
                 }
-            }
-            intent.apply {
-                putExtra("playerCount", playerCount.toString())
             }
 
             val botCount: Int
@@ -61,10 +54,6 @@ class GameSetupActivity : AppCompatActivity() {
                             .toCollection(ArrayList())
                 }
             }
-            intent.apply {
-                putExtra("botCount", botCount)
-                putStringArrayListExtra("playerNames", playerNames)
-            }
 
 
             val checkedTileShapeRadioButtonId = tileShapeRadioGroup.checkedRadioButtonId
@@ -76,28 +65,32 @@ class GameSetupActivity : AppCompatActivity() {
                     throw java.lang.IllegalArgumentException("Invalid radio button for tile shape")
                 }
             }
-            intent.apply {
-                putExtra("tileShape", tileShape.toString())
-            }
-
-            //TODO probable should parametrize somehow
-            val fieldWidth = 6
-            val fieldHeight = 6
-            intent.apply {
-                putExtra("fieldWidth", fieldWidth)
-                putExtra("fieldHeight", fieldHeight)
-            }
 
             val activateShark = activateSharkCheckBox.isChecked
-            intent.apply {
-                putExtra("activateShark", activateShark)
-            }
             val showFishCount = showFishCountCheckBox.isChecked
-            intent.apply {
-                putExtra("showFishCount", showFishCount)
-            }
 
-            startActivity(intent)
+            val gameSettings = Bundle()
+            gameSettings.apply {
+                putString("gameType", gameType.toString())
+                putInt("playerCount", playerCount)
+                putInt("botCount", botCount)
+                putStringArrayList("playerNames", playerNames)
+                putString("tileShape", tileShape)
+                putBoolean("activateShark", activateShark)
+                putBoolean("showFishCount", showFishCount)
+                //TODO probable should parametrize somehow
+                putInt("fieldWidth", 6)
+                putInt("fieldHeight", 6)
+            }
+            val result = Intent()
+            result.putExtra("gameSettings", gameSettings)
+            setResult(0, result)
+            finish();
         }
+    }
+
+    override fun onBackPressed() {
+        setResult(-1)
+        finish()
     }
 }
