@@ -55,7 +55,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center"
-        android:text="Game setup"
+        android:text="@string/game_setup"
         android:textSize="56sp"
         app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
         app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_5v"
@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Single"
+            android:text="@string/single"
             android:textSize="40sp" />
 
         <RadioButton
@@ -101,8 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:enabled="false"
-            android:text="Hotseat"
+            android:text="@string/hotseat"
             android:textSize="40sp" />
 
     </RadioGroup>
@@ -126,7 +125,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center|left"
-        android:text="Player count"
+        android:text="@string/player_count"
         android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/game_setup_guideline_6"
         app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_3v"
@@ -189,7 +188,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center|left"
-        android:text="Activate shark"
+        android:text="@string/activate_shark"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
         app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_3v"
@@ -219,7 +218,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="Show fish count"
+        android:text="@string/show_fish_count"
         android:gravity="center|left"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
@@ -269,21 +268,21 @@
             android:id="@+id/triangleTileShapeRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="triangle"
+            android:text="@string/triangle"
             android:textSize="24sp" />
 
         <RadioButton
             android:id="@+id/squareTileShapeRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="square"
+            android:text="@string/square"
             android:textSize="24sp" />
 
         <RadioButton
             android:id="@+id/hexagonTileShapeRadioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="hexagon"
+            android:text="@string/hexagon"
             android:textSize="24sp" />
     </RadioGroup>
 
@@ -298,7 +297,7 @@
         android:id="@+id/startNewGameButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="Start!"
+        android:text="@string/start"
         android:textSize="80sp"
         app:layout_constraintStart_toStartOf="@+id/game_setup_guideline_1v"
         app:layout_constraintEnd_toEndOf="@+id/game_setup_guideline_5v"
