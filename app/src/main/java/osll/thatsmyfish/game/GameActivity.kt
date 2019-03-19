@@ -8,11 +8,14 @@ import android.os.Bundle
 import android.text.TextPaint
 import android.util.Size
 import android.view.View.INVISIBLE
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import osll.thatsmyfish.R
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import osll.thatsmyfish.IllegalIntentReceived
+import osll.thatsmyfish.R
 import osll.thatsmyfish.game.internal.*
 
 /**
@@ -26,7 +29,6 @@ class GameActivity : AppCompatActivity() {
         get() = findViewById<LinearLayout>(R.id.game_scores)
     private lateinit var playerViews: Map<Player, PlayerView>
     private var gameType: GameType = GameType.SINGLE
-    //private var gameStats: GameStats
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,19 +37,26 @@ class GameActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_game)
 
-        val playerNames = intent.getStringArrayListExtra("playerNames")
-        val bots = intent.getIntExtra("botCount", 0)
+        val settings = intent.getBundleExtra("gameSettings")
+
+        val playerNames = settings.getStringArrayList("playerNames")
+                ?: throw IllegalIntentReceived("playerNames", this)
+        val bots = settings.getInt("botCount", 0)
         val fieldSize = Size(
-                intent.getIntExtra("fieldWidth", 5),
-                intent.getIntExtra("fieldHeight", 5)
+                settings.getInt("fieldWidth", 5),
+                settings.getInt("fieldHeight", 5)
         )
-        val chosenShape = intent.getStringExtra("tileShape")
-        gameType = GameType.valueOf(intent.getStringExtra("gameType"))
+        val chosenShape = settings.getString("tileShape")
+                ?: throw IllegalIntentReceived("tileShape", this)
+        val gameType = settings.getString("gameType")
+                ?: throw IllegalIntentReceived("gameType", this)
+        this.gameType = GameType.valueOf(gameType)
 
         val playerColors: Array<Int> = resources.getIntArray(R.array.player_colors).toTypedArray()
         val humanPlayers = playerNames.zip(playerColors).map { AsyncPlayer(it.first, it.second) }
-        val botPlayers = List(bots) { "Bot #$it" }.zip(playerColors.drop(playerNames.size)).map { Bot(it
-                    .first, it.second) }
+        val botPlayers = List(bots) { "Bot #$it" }.zip(playerColors.drop(playerNames.size)).map {
+            Bot(it.first, it.second)
+        }
         val players = humanPlayers + botPlayers
 
         val gameHandler = GameHandler(
@@ -105,20 +114,21 @@ class GameActivity : AppCompatActivity() {
 
     private fun handleGameFieldUpdate(turnInfo: TurnInfo) {
         when (turnInfo) {
-            InvalidTurn      -> {}
+            InvalidTurn -> {
+            }
             is PenguinPlaced -> {
                 gameView.viewByTile(turnInfo.tile).postInvalidate()
                 playerViews.getValue(turnInfo.player).postInvalidate()
             }
-            is PenguinMoved  -> {
+            is PenguinMoved -> {
                 gameView.viewByTile(turnInfo.fromTile).visibility = INVISIBLE
                 gameView.viewByTile(turnInfo.toTile).textView.postInvalidate()
                 playerViews.getValue(turnInfo.player).postInvalidate()
             }
-            is PhaseStarted  -> when (turnInfo.gameState) {
+            is PhaseStarted -> when (turnInfo.gameState) {
                 InitialPlacement -> showToast("Time to place your penguins!")
-                Running          -> showToast("All penguins placed!")
-                is Finished      -> {
+                Running -> showToast("All penguins placed!")
+                is Finished -> {
                     val gameStats = turnInfo.gameState.gameStats
                     if (gameType == GameType.SINGLE) {
                         recalculateStats(gameStats)
@@ -127,19 +137,21 @@ class GameActivity : AppCompatActivity() {
                     val sortedPlayerNames = gameScores.map { it.first.name }
                     val playerPoints = gameScores.map { it.second }
 
-                    startActivity(
-                        Intent(
-                                this, GameStatsActivity::class.java
-                        ).apply {
-                            putExtra("totalTime", gameStats.totalTime())
-                            putExtra("totalMoves", gameStats.totalMoves)
-                            putStringArrayListExtra("sortedPlayerNames", sortedPlayerNames.toCollection(ArrayList()))
-                            putIntegerArrayListExtra("playerPoints", playerPoints.toCollection(ArrayList()))
-                            putExtras(intent.extras!!)
-                        })
+                    val gameResults = Bundle().apply {
+                        putLong("totalTime", gameStats.totalTime())
+                        putInt("totalMoves", gameStats.totalMoves)
+                        putStringArrayList("sortedPlayerNames", sortedPlayerNames.toCollection(ArrayList()))
+                        putIntegerArrayList("playerPoints", playerPoints.toCollection(ArrayList()))
+                    }
+                    val intent = Intent().apply {
+                        putExtra("gameResults", gameResults)
+                        putExtra("gameSettings", intent.getBundleExtra("gameSettings"))
+                    }
+                    setResult(0, intent)
+                    finish()
                 }
             }
-            is PlayerFinished    -> {
+            is PlayerFinished -> {
                 showToast("${turnInfo.player.name} has no more turns")
             }
         }

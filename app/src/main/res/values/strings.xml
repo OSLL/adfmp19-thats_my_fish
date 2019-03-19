@@ -3,4 +3,30 @@
 
     <string name="title_activity_game">GameActivity</string>
     <string name="player_score">%s\n%d</string>
+    <string name="hotseat">Hotseat</string>
+    <string name="single">Single</string>
+    <string name="game_setup">Game setup</string>
+    <string name="player_count">Player count</string>
+    <string name="activate_shark">Activate shark</string>
+    <string name="show_fish_count">Show fish count</string>
+    <string name="triangle">triangle</string>
+    <string name="square">square</string>
+    <string name="hexagon">hexagon</string>
+    <string name="start">Start!</string>
+    <string name="results">Results</string>
+    <string name="total_time">Total time</string>
+    <string name="total_moves">Total moves</string>
+    <string name="share_on_fb">Share on FB</string>
+    <string name="play_again">Play again</string>
+    <string name="continue_game">Continue</string>
+    <string name="new_game">New game</string>
+    <string name="stats">Stats</string>
+    <string name="win">Win</string>
+    <string name="draw">Draw</string>
+    <string name="lose">Lose</string>
+    <string name="total">Total</string>
+    <string name="avg_fish">Avg fish</string>
+    <string name="total_fish">Total fish</string>
+    <string name="avg_moves">Avg moves</string>
+    <string name="main_menu">Main menu</string>
 </resources>
