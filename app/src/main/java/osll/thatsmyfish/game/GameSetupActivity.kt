@@ -18,7 +18,7 @@ class GameSetupActivity : AppCompatActivity() {
         playerCountRadioGroup.check(R.id.twoPlayersRadioButton)
         tileShapeRadioGroup.check(R.id.squareTileShapeRadioButton)
 
-        startNewGameButton.setOnClickListener {
+        runNewGameButton.setOnClickListener {
 
             val checkedGameTypeRadioButtonId = gameTypeRadioGroup.checkedRadioButtonId
             val gameType = when (checkedGameTypeRadioButtonId) {
@@ -50,7 +50,7 @@ class GameSetupActivity : AppCompatActivity() {
                     botCount = 0
                     //TODO probably should use colors as names
                     playerNames = arrayOf("A", "B", "C", "D")
-                            .sliceArray(0..playerCount)
+                            .sliceArray(0 until playerCount)
                             .toCollection(ArrayList())
                 }
             }
