@@ -294,7 +294,7 @@
         app:layout_constraintGuide_percent="0.8" />
 
     <Button
-        android:id="@+id/startNewGameButton"
+        android:id="@+id/runNewGameButton"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="@string/start"

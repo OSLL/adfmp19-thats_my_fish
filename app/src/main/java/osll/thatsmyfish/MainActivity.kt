@@ -8,7 +8,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import osll.thatsmyfish.game.GameActivity
 import osll.thatsmyfish.game.GameSetupActivity
 import osll.thatsmyfish.game.GameStatsActivity
-import java.lang.RuntimeException
 
 class MainActivity : AppCompatActivity() {
 

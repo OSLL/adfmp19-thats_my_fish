@@ -27,7 +27,7 @@
         android:layout_height="0dp"
         app:layout_constraintHeight_percent=".15"
         app:layout_constraintTop_toBottomOf="@id/nameTextView"
-        app:layout_constraintBottom_toTopOf="@id/startNewGameButton"
+        app:layout_constraintBottom_toTopOf="@id/runNewGameButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
@@ -51,7 +51,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent=".15"
-        app:layout_constraintTop_toBottomOf="@id/startNewGameButton"
+        app:layout_constraintTop_toBottomOf="@id/runNewGameButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
