@@ -3,8 +3,8 @@ package osll.thatsmyfish.game.internal
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
-data class Bot(override val name: String, override val color: Int) : Player() {
-    override suspend fun movePenguin(penguinPositions: List<Tile>): Triple<Tile, Int, Int> {
+data class Bot(override val name: String, override val color: Int) : AbstractPlayer() {
+    fun movePenguin(penguinPositions: Collection<Tile>): Pair<Tile, Tile> {
         val penguinTile = choose(
                 penguinPositions.filter {
                     val neighbours = it.getNeighbours()
@@ -18,26 +18,22 @@ data class Bot(override val name: String, override val color: Int) : Player() {
                 }
         )
 
-        var maxSteps = 0
-        var curTile: Tile? = penguinTile
-        do {
-            ++maxSteps
-            curTile = curTile!!.getNeighbour(direction)
-        } while (isFree(curTile))
+        var curTile: Tile? = penguinTile.getNeighbour(direction)
+        val way = ArrayList<Tile>()
+        while (curTile != null && curTile.occupiedBy == null) {
+            way.add(curTile)
+            curTile = curTile.getNeighbour(direction)
+        }
 
-        val count = Random.nextInt(1, maxSteps)
+        val step = Random.nextInt(way.size)
 
-        delay(TURN_DELAY_MS)
-
-        return Triple(penguinTile, direction, count)
+        return Pair(penguinTile, way[step])
     }
 
-    override suspend fun placePenguin(field: List<List<Tile>>): Tile {
+    fun placePenguin(field: List<List<Tile>>): Tile {
         val availableTiles = field.flatMap { it.filter { tile -> isFree(tile) } }
 
         val chosenTile = availableTiles[Random.nextInt(0, availableTiles.size)]
-
-        delay(TURN_DELAY_MS)
 
         return chosenTile
     }

@@ -3,19 +3,16 @@ package osll.thatsmyfish.game
 import android.app.Activity
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Point
-import android.os.Build
-import android.util.Log
 import android.view.Gravity
 import android.widget.TextView
 import osll.thatsmyfish.R
-import osll.thatsmyfish.game.internal.Player
+import osll.thatsmyfish.game.internal.AbstractPlayer
 import kotlin.math.max
 
 class PlayerView(
         context: Context,
-        val player: Player,
+        val player: AbstractPlayer,
         val scoreGetter: () -> Int
 ) : TextView(context) {
     private val screenSize = Point()

@@ -3,18 +3,24 @@ package osll.thatsmyfish
 import android.util.Log
 import android.view.View
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingResource
+import androidx.test.espresso.IdlingResource.ResourceCallback
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.instanceOf
+import org.hamcrest.Matchers.not
 import org.junit.Rule
 import org.junit.Test
 import osll.thatsmyfish.game.GameFieldView
+import osll.thatsmyfish.game.Trigger
+import osll.thatsmyfish.game.TriggerWatcher
+
 
 class PlayGameTest {
 
@@ -40,7 +46,7 @@ class PlayGameTest {
                 .check(matches(not(isChecked())))
 
         onView(isRoot())
-                .perform(ViewActions.pressBack())
+                .perform(pressBack())
         onView(withId(R.id.startNewGameButton))
                 .check(matches(isDisplayed()))
     }
@@ -60,7 +66,7 @@ class PlayGameTest {
                 .check(matches(isDisplayed()))
 
         onView(isRoot())
-                .perform(ViewActions.pressBack())
+                .perform(pressBack())
         onView(withId(R.id.startNewGameButton))
                 .check(matches(isDisplayed()))
     }
@@ -135,7 +141,7 @@ class PlayGameTest {
                 .check(matches(isDisplayed()))
 
         onView(isRoot())
-                .perform(ViewActions.pressBack())
+                .perform(pressBack())
         onView(withId(R.id.startNewGameButton))
                 .check(matches(isDisplayed()))
     }
@@ -191,31 +197,19 @@ class PlayGameTest {
 
         override fun perform(uiController: UiController?, view: View?) {
             val field = view as GameFieldView
-            Log.e("MY_OWN_TAG", field.game.toString())
             // put penguins
             for (j in 0 until 6) {
-                // clicks via .perform(click()) doesn't work here - it hangs up
+                getCell(field, 1, j).callOnClick()
+            }
+            // move penguins
+            for (j in 0 until 6) {
+                getCell(field, 1, j).callOnClick()
                 getCell(field, 0, j).callOnClick()
-                Thread.sleep(100);
             }
-            // move penguins first time
-            for (j in 0 until 6) {
-                getCell(field,0, j).callOnClick()
-                Thread.sleep(100);
-                getCell(field, 2, j).callOnClick()
-                Thread.sleep(100);
-            }
-            // move penguins first time
-            for (j in 0 until 6) {
-                getCell(field,2, j).callOnClick()
-                Thread.sleep(100);
-                getCell(field,1, j).callOnClick()
-                Thread.sleep(100);
-            }
-        }
-
-        private fun getCell(gameView: GameFieldView, i: Int, j: Int): View {
-            return gameView.getChildAt(i + j * 6)
         }
     }
+}
+
+private fun getCell(gameView: GameFieldView, i: Int, j: Int): View {
+    return gameView.getChildAt(i + j * 6)
 }

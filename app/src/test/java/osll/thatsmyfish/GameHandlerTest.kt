@@ -15,7 +15,7 @@ import kotlin.random.Random
 private class TestPlayer(
         val initialPosition: Pair<Int, Int>,
         val moveDirection: Pair<Int, Int>
-) : Player() {
+) : AbstractPlayer() {
     override val name = "Test"
     override val color = Color.YELLOW
 
@@ -40,7 +40,7 @@ private class TestPlayer(
  */
 private class TestOccupiedPlayer(
         val initialPosition: Pair<Int, Int>
-) : Player() {
+) : AbstractPlayer() {
     override val name = "Test #2"
     override val color = Color.YELLOW
 
@@ -72,8 +72,8 @@ class GameHandlerTest {
             shape: Shape,
             direction: Int,
             count: Int,
-            expectedPlacementOutcome: (Player) -> TurnInfo,
-            expectedMoveOutcome: (Player) -> TurnInfo
+            expectedPlacementOutcome: (AbstractPlayer) -> TurnInfo,
+            expectedMoveOutcome: (AbstractPlayer) -> TurnInfo
     ) {
         val player = TestPlayer(
                 1 to 1,
@@ -118,10 +118,10 @@ class GameHandlerTest {
                     shape,
                     direction,
                     1,
-                    { player: Player ->
+                    { player: AbstractPlayer ->
                         PenguinPlaced(player, (player as TestPlayer).tileWithPenguin)
                     },
-                    { player: Player ->
+                    { player: AbstractPlayer ->
                         (player as TestPlayer).run {
                             val toTile = tileWithPenguin.getNeighbour(direction)
                             assertNotNull(toTile)
@@ -146,7 +146,7 @@ class GameHandlerTest {
                     shape,
                     direction,
                     3,
-                    { player: Player ->
+                    { player: AbstractPlayer ->
                         PenguinPlaced(player, (player as TestPlayer).tileWithPenguin)
                     },
                     { InvalidTurn }

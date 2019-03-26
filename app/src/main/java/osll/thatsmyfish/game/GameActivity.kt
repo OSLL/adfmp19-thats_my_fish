@@ -7,13 +7,10 @@ import android.graphics.Paint
 import android.os.Bundle
 import android.text.TextPaint
 import android.util.Size
-import android.view.View.INVISIBLE
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import osll.thatsmyfish.IllegalIntentReceived
 import osll.thatsmyfish.R
 import osll.thatsmyfish.game.internal.*
@@ -27,7 +24,7 @@ class GameActivity : AppCompatActivity() {
 
     private val scoresView
         get() = findViewById<LinearLayout>(R.id.game_scores)
-    private lateinit var playerViews: Map<Player, PlayerView>
+    private lateinit var playerViews: Map<AbstractPlayer, PlayerView>
     private var gameType: GameType = GameType.SINGLE
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +50,7 @@ class GameActivity : AppCompatActivity() {
         this.gameType = GameType.valueOf(gameType)
 
         val playerColors: Array<Int> = resources.getIntArray(R.array.player_colors).toTypedArray()
-        val humanPlayers = playerNames.zip(playerColors).map { AsyncPlayer(it.first, it.second) }
+        val humanPlayers = playerNames.zip(playerColors).map { Player(it.first, it.second) }
         val botPlayers = List(bots) { "Bot #$it" }.zip(playerColors.drop(playerNames.size)).map {
             Bot(it.first, it.second)
         }
@@ -75,89 +72,43 @@ class GameActivity : AppCompatActivity() {
         }
 
         val gameHolder = findViewById<ScrollView>(R.id.game_view_holder)
-        gameView = GameFieldView(this, gameHandler)
+        gameView = GameFieldView(this, gameHandler.tiles,
+                gameHandler.shape, gameHandler.size)
         gameHolder.addView(gameView)
+        gameHandler.gameWatcher = object : GameHandler.GameWatcher {
+            override fun playerWait(player: AbstractPlayer) {}
 
+            override fun scoreUpdate(scores: Map<AbstractPlayer, Int>) {
+                scores.map {playerViews[it.key]!!.postInvalidate()}
+            }
 
-        GlobalScope.launch {
-            var finished = false
-
-            while (!finished) {
-                val activePlayerScoresView = gameHandler.activePlayer?.let {
-                    playerViews.getValue(it)
+            override fun gameFinished(gameStatistics: GameStatistics) {
+                if (this@GameActivity.gameType == GameType.SINGLE) {
+                    recalculateStats(gameStatistics)
                 }
-                activePlayerScoresView?.apply {
-                    paint.style = Paint.Style.FILL_AND_STROKE
-                    paint.strokeWidth = 2f
-                    postInvalidate()
+                val gameScores = gameStatistics.scores
+                val sortedPlayerNames = gameScores.map { it.first.name }
+                val playerPoints = gameScores.map { it.second }
+
+                val gameResults = Bundle().apply {
+                    putLong("totalTime", gameStatistics.time)
+                    putInt("totalMoves", gameStatistics.totalMoves)
+                    putStringArrayList("sortedPlayerNames", sortedPlayerNames.toCollection(ArrayList()))
+                    putIntegerArrayList("playerPoints", playerPoints.toCollection(ArrayList()))
                 }
-
-                val turnInfo = gameHandler.handleTurn()
-
-                finished = finished
-                        || (turnInfo is PhaseStarted && turnInfo.gameState is Finished)
-
-                activePlayerScoresView?.apply {
-                    paint.style = Paint.Style.FILL
-                    postInvalidate()
+                val intent = Intent().apply {
+                    putExtra("gameResults", gameResults)
+                    putExtra("gameSettings", intent.getBundleExtra("gameSettings"))
                 }
-
-                runOnUiThread {
-                    this@GameActivity.handleGameFieldUpdate(turnInfo)
-                }
+                setResult(0, intent)
+                finish()
             }
         }
+        gameHandler.start(gameView)
     }
 
-    private fun showToast(message: String) =
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
-    private fun handleGameFieldUpdate(turnInfo: TurnInfo) {
-        when (turnInfo) {
-            InvalidTurn -> {
-            }
-            is PenguinPlaced -> {
-                gameView.viewByTile(turnInfo.tile).postInvalidate()
-                playerViews.getValue(turnInfo.player).postInvalidate()
-            }
-            is PenguinMoved -> {
-                gameView.viewByTile(turnInfo.fromTile).visibility = INVISIBLE
-                gameView.viewByTile(turnInfo.toTile).textView.postInvalidate()
-                playerViews.getValue(turnInfo.player).postInvalidate()
-            }
-            is PhaseStarted -> when (turnInfo.gameState) {
-                InitialPlacement -> showToast("Time to place your penguins!")
-                Running -> showToast("All penguins placed!")
-                is Finished -> {
-                    val gameStats = turnInfo.gameState.gameStats
-                    if (gameType == GameType.SINGLE) {
-                        recalculateStats(gameStats)
-                    }
-                    val gameScores = gameStats.scores
-                    val sortedPlayerNames = gameScores.map { it.first.name }
-                    val playerPoints = gameScores.map { it.second }
-
-                    val gameResults = Bundle().apply {
-                        putLong("totalTime", gameStats.totalTime())
-                        putInt("totalMoves", gameStats.totalMoves)
-                        putStringArrayList("sortedPlayerNames", sortedPlayerNames.toCollection(ArrayList()))
-                        putIntegerArrayList("playerPoints", playerPoints.toCollection(ArrayList()))
-                    }
-                    val intent = Intent().apply {
-                        putExtra("gameResults", gameResults)
-                        putExtra("gameSettings", intent.getBundleExtra("gameSettings"))
-                    }
-                    setResult(0, intent)
-                    finish()
-                }
-            }
-            is PlayerFinished -> {
-                showToast("${turnInfo.player.name} has no more turns")
-            }
-        }
-    }
-
-    private fun recalculateStats(gameStats: GameStats) {
+    private fun recalculateStats(gameStats: GameStatistics) {
         val sharedPreferences = getSharedPreferences("stats", Context.MODE_PRIVATE)
         val win = sharedPreferences.getInt("win", 0)
         val draw = sharedPreferences.getInt("draw", 0)

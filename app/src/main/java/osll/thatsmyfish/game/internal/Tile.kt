@@ -6,7 +6,7 @@ class Tile(val shape: Shape, val fishCount: Int) {
     var state: TileState = TileState.New
         private set
     private val neighbours: Array<Tile?> = Array(shape.moveDirections) { null }
-    var occupiedBy: Player? = null
+    var occupiedBy: AbstractPlayer? = null
         internal set
 
     internal fun initializeNeighbours(initialNeighbours: Array<Tile?>) {

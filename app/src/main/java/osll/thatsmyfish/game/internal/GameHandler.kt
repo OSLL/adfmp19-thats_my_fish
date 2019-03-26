@@ -1,50 +1,53 @@
 package osll.thatsmyfish.game.internal
 
+import android.util.Log
+import android.view.View.INVISIBLE
+import osll.thatsmyfish.game.GameFieldView
+import osll.thatsmyfish.game.PenguinMovedTrigger
+import osll.thatsmyfish.game.PenguinPlacedTrigger
 import kotlin.random.Random
 
-data class GameStats(
-        val scores: List<Pair<Player,Int>>,
-        val startTime: Long = System.currentTimeMillis(),
-        var moves: Int = 0,
-        var totalMoves: Int = 0
-) {
-    fun totalTime(): Long = System.currentTimeMillis() - startTime
-}
+data class GameStatistics(
+        val scores: List<Pair<AbstractPlayer, Int>>,
+        val time: Long,
+        var moves: Int,
+        var totalMoves: Int
+)
 
-sealed class GameState
-object InitialPlacement : GameState()
-object Running : GameState()
-data class Finished(val gameStats: GameStats) : GameState()
 
-sealed class TurnInfo
-object InvalidTurn: TurnInfo()
-data class PhaseStarted(val gameState: GameState): TurnInfo()
-data class PenguinPlaced(val player: Player, val tile: Tile): TurnInfo()
-data class PenguinMoved(val player: Player, val fromTile: Tile, val toTile: Tile): TurnInfo()
-data class PlayerFinished(val player: Player): TurnInfo()
+enum class MyGameState { Initialization, Game, Finished }
 
 class GameHandler(
         val size: Pair<Int, Int>,
         val shape: Shape,
-        val players: List<Player>,
+        val players: List<AbstractPlayer>,
         val initialPenguins: Int
 ) {
+    var view: GameFieldView? = null
+
     val tiles: List<List<Tile>>
 
-    var gameState: GameState = InitialPlacement
+    var gameState: MyGameState = MyGameState.Initialization
         private set
-    private val currentScores = Array(players.size) { 0 }
+
+    private val currentScores = HashMap<AbstractPlayer, Int>()
+
     private val penguinPositions = players.map {
         it to mutableSetOf<Tile>()
     }.toMap()
+
+    var gameWatcher: GameWatcher? = null
     var moves = 0
     var totalMoves = 0
-    val startTime = System.currentTimeMillis()
+    var startTime = 0L
 
     val scores
-        get() = players.zip(currentScores).sortedByDescending { it.second }
+        get() = currentScores.entries
+                .sortedByDescending { it.value }
+                .map { it.key to it.value }
+                .toList()
 
-    fun getScore(player: Player) = currentScores[players.indexOf(player)]
+    fun getScore(player: AbstractPlayer) = currentScores[player] ?: 0
 
     private val activePlayers = List(players.size) { it }.toMutableList()
     private var currentPlayer = 0
@@ -64,9 +67,9 @@ class GameHandler(
                         when (shape) {
                             Square -> arrayOf(
                                     (i - 1) to (j),
-                                    (i)     to (j + 1),
+                                    (i) to (j + 1),
                                     (i + 1) to (j),
-                                    (i)     to (j - 1)
+                                    (i) to (j - 1)
                             )
                             Hexagon -> {
                                 val upper = j % 2 == 1
@@ -74,19 +77,19 @@ class GameHandler(
                                     arrayOf(
                                             (i - 1) to (j),
                                             (i - 1) to (j + 1),
-                                            (i)     to (j + 1),
+                                            (i) to (j + 1),
                                             (i + 1) to (j),
-                                            (i)     to (j - 1),
+                                            (i) to (j - 1),
                                             (i - 1) to (j - 1)
                                     )
                                 } else {
                                     arrayOf(
                                             (i - 1) to (j),
-                                            (i)     to (j + 1),
+                                            (i) to (j + 1),
                                             (i + 1) to (j + 1),
                                             (i + 1) to (j),
                                             (i + 1) to (j - 1),
-                                            (i)     to (j - 1)
+                                            (i) to (j - 1)
                                     )
                                 }
                             }
@@ -94,21 +97,21 @@ class GameHandler(
                                 val upper = (i + j) % 2 == 0
                                 if (upper) {
                                     arrayOf(
-                                            (i)     to (j - 1),
-                                            (i)     to (j + 1),
-                                            (i)     to (j + 1),
+                                            (i) to (j - 1),
+                                            (i) to (j + 1),
+                                            (i) to (j + 1),
                                             (i + 1) to (j),
                                             (i + 1) to (j),
-                                            (i)     to (j - 1)
+                                            (i) to (j - 1)
                                     )
                                 } else {
                                     arrayOf(
                                             (i - 1) to (j),
                                             (i - 1) to (j),
-                                            (i)     to (j + 1),
-                                            (i)     to (j + 1),
-                                            (i)     to (j - 1),
-                                            (i)     to (j - 1)
+                                            (i) to (j + 1),
+                                            (i) to (j + 1),
+                                            (i) to (j - 1),
+                                            (i) to (j - 1)
                                     )
                                 }
                             }
@@ -118,95 +121,109 @@ class GameHandler(
         }
     }
 
-    private suspend fun handlePenguinPlacement(): TurnInfo {
-        if (penguinPositions.getValue(activePlayer!!).size == initialPenguins) {
-            gameState = Running
-
-            return PhaseStarted(gameState)
-        } else {
-            val chosenTile = activePlayer!!.placePenguin(tiles)
-
-            return if (chosenTile.occupiedBy == null) {
-                currentScores[activePlayers[currentPlayer]] += chosenTile.fishCount
-                chosenTile.occupiedBy = activePlayer
-                penguinPositions.getValue(activePlayer!!).add(chosenTile)
-
-                PenguinPlaced(activePlayer!!, chosenTile)
-            } else {
-                InvalidTurn
-            }
-        }
+    fun start(gameView: GameFieldView) {
+        view = gameView
+        startTime = System.currentTimeMillis()
+        skipBots()
     }
 
-    private suspend fun handlePenguinMovement(): TurnInfo {
-        val playerPenguins by lazy {
-            penguinPositions.getValue(activePlayer!!)
-        }
-        val noTurnsExist by lazy {
-            playerPenguins.all {
-                tile -> tile.getNeighbours().all { it == null || it.occupiedBy != null }
-            }
-        }
-
-        when {
-            activePlayers.isEmpty() -> {
-                gameState = Finished(GameStats(
-                        scores,
-                        startTime,
-                        moves,
-                        totalMoves
-                ))
-
-                return PhaseStarted(gameState)
-            }
-            noTurnsExist ->
-                return PlayerFinished(activePlayer!!)
-            else -> {
-                val (tile, direction, count) = activePlayer!!.movePenguin(playerPenguins.toList())
-                if (tile in playerPenguins) {
-                    val jumpedTiles = tile.freeInDirection(direction).take(count).toList()
-                    if (jumpedTiles.size == count && jumpedTiles.all { it.occupiedBy == null }) {
-                        val toTile = jumpedTiles.last()
-
-                        currentScores[activePlayers[currentPlayer]] += toTile.fishCount
-                        playerPenguins.remove(tile)
-                        tile.sink()
-                        toTile.occupiedBy = activePlayer
-                        playerPenguins.add(toTile)
-                        totalMoves++
-                        if (currentPlayer == 0) {
-                            moves++
+    private fun skipBots() {
+        if (gameState == MyGameState.Initialization) {
+            while (gameState == MyGameState.Initialization) {
+                val player = players[currentPlayer]
+                if (player is Player) {
+                    gameWatcher?.playerWait(player)
+                    view!!.setTrigger(object : PenguinPlacedTrigger {
+                        override val player: Player = player
+                        override fun run(tile: Tile) {
+                            holdPenguinPlaced(player, tile)
+                            nextPlayer()
+                            skipBots()
                         }
-                        return PenguinMoved(activePlayer!!, tile, toTile)
-                    }
+                    })
+                    return
+                } else if (player is Bot) {
+                    holdPenguinPlaced(player, player.placePenguin(tiles))
+                    nextPlayer()
                 }
             }
         }
-        return InvalidTurn
+        if (gameState == MyGameState.Game) {
+            while (gameState == MyGameState.Game) {
+                val player = players[currentPlayer]
+                if (!checkCanMove(player)) {
+                    nextPlayer()
+                    continue
+                }
+                if (player is Player) {
+                    view!!.setTrigger(object : PenguinMovedTrigger {
+                        override val player: Player = player
+                        override fun run(from: Tile, to: Tile) {
+                            holdPenguinMoved(player, from, to)
+                            nextPlayer()
+                            skipBots()
+                        }
+                    })
+                    return
+                } else if (player is Bot) {
+                    val step = player.movePenguin(penguinPositions[player]!!)
+                    holdPenguinMoved(player, step.first, step.second)
+                    nextPlayer()
+                }
+            }
+        }
+        if (gameState == MyGameState.Finished) {
+            gameWatcher?.gameFinished(GameStatistics(scores,
+                    System.currentTimeMillis() - startTime,
+                    moves, totalMoves))
+        }
     }
 
-    suspend fun handleTurn(): TurnInfo {
-        val result = when (gameState) {
-            InitialPlacement -> handlePenguinPlacement()
-            Running          -> handlePenguinMovement()
-            is Finished      -> PhaseStarted(gameState)
+    fun holdPenguinPlaced(player: AbstractPlayer, tile: Tile) {
+        currentScores[player] = (currentScores[player] ?: 0) + tile.fishCount
+        tile.occupiedBy = activePlayer
+        penguinPositions.getValue(player).add(tile)
+        view!!.viewByTile(tile).postInvalidate()
+        if (penguinPositions.all { it.value.size == initialPenguins }) {
+            gameState = MyGameState.Game
         }
+        gameWatcher?.scoreUpdate(currentScores)
+    }
 
-        when (result) {
-            is InvalidTurn    -> {}
-            is PhaseStarted   -> {}
-            is PlayerFinished -> {
-                activePlayers.removeAt(currentPlayer)
-                if (activePlayers.isNotEmpty()) {
-                    currentPlayer %= activePlayers.size
-                }
-            }
-            else              -> {
-                currentPlayer = (currentPlayer + 1) % activePlayers.size
-            }
+    fun holdPenguinMoved(player: AbstractPlayer, from: Tile, to: Tile) {
+        currentScores[player] = (currentScores[player] ?: 0) + to.fishCount
+        to.occupiedBy = activePlayer
+        penguinPositions[player]?.remove(from)
+        from.sink()
+        to.occupiedBy = player
+        penguinPositions[player]?.add(to)
+        view!!.viewByTile(from).visibility = INVISIBLE
+        view!!.viewByTile(from).postInvalidate()
+        view!!.viewByTile(to).postInvalidate()
+        totalMoves++
+        if (player == players[0]) {
+            moves++
         }
+        if (players.none(this@GameHandler::checkCanMove)) {
+            gameState = MyGameState.Finished
+        }
+    }
 
-        return result
+    fun nextPlayer() {
+        currentPlayer = (currentPlayer + 1) % players.size
+    }
+
+
+    private fun checkCanMove(player: AbstractPlayer): Boolean {
+        return penguinPositions[player]?.any { tile ->
+            tile.getNeighbours().any { it != null && it.occupiedBy == null }
+        } ?: false
+    }
+
+    interface GameWatcher {
+        fun scoreUpdate(scores: Map<AbstractPlayer, Int>)
+        fun gameFinished(gameStatistics: GameStatistics)
+        fun playerWait(player: AbstractPlayer)
     }
 
     companion object {
